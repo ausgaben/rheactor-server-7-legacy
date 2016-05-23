@@ -9,7 +9,7 @@ let bcrypt = require('bcrypt')
 Promise.promisifyAll(bcrypt)
 let Errors = require('rheactor-value-objects/errors')
 let Joi = require('joi')
-let checkVersion = require('rheactor-server/api/check-version')
+let checkVersion = require('../check-version')
 
 /**
  * Manages reset-password requests.

@@ -1,6 +1,7 @@
 'use strict'
 
 const Promise = require('bluebird')
+const keypair = require('keypair')
 
 module.exports = function (config, redis) {
   const environment = config.get('environment')
@@ -19,7 +20,6 @@ module.exports = function (config, redis) {
           console.log(config.get('public_key'))
         }
       } else {
-        let keypair = require('keypair')
         let pair = keypair({bits: 1024})
         config.set('private_key', pair.private)
         config.set('public_key', pair.public)
