@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/RHeactor/server#readme",
   "dependencies": {
+    "aws-sdk": "^2.3.14",
     "bcrypt": "^0.8.6",
     "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",
