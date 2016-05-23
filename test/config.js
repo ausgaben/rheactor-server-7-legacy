@@ -1,0 +1,33 @@
+'use strict'
+
+let nconf = require('nconf')
+let path = require('path')
+
+nconf.use('memory')
+
+let host = 'localhost'
+let port = 8080
+
+// Set defaults
+nconf.defaults({
+  'environment': 'testing',
+  'mime_type': 'application/vnd.resourceful-humans.rheactor.v1+json',
+  'port': port,
+  'host': host,
+  'api_host': 'http://' + host + ':' + port,
+  'web_host': 'http://' + host + ':' + port,
+  'deployVersion': +new Date(),
+  'app': process.env.npm_package_name,
+  'root': path.normalize(path.join(__dirname, '/../..')),
+  'token_lifetime': 1800,
+  'redis': {
+    'host': '127.0.0.1',
+    'port': 6379,
+    'database': 0
+  },
+  'private_key': null,
+  'public_key': null,
+  'bcrypt_rounds': 14
+})
+
+module.exports = nconf
