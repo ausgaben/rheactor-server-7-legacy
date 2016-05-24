@@ -2,17 +2,16 @@
 
 let Promise = require('bluebird')
 let Errors = require('rheactor-value-objects/errors')
-let transformer = require('../transformer')
 
 /**
  * @param {express.app} app
  * @param {nconf} config
  * @param {UserRepository} userRepo
  * @param tokenAuth
- * @param {JSONLD} jsonld
  * @param {function} sendHttpProblem
+ * @param {function} transformer
  */
-module.exports = function (app, config, userRepo, tokenAuth, jsonld, sendHttpProblem) {
+module.exports = function (app, config, userRepo, tokenAuth, sendHttpProblem, transformer) {
   app.get('/api/user/:id', tokenAuth, function (req, res) {
     Promise
       .try(() => {
@@ -22,7 +21,7 @@ module.exports = function (app, config, userRepo, tokenAuth, jsonld, sendHttpPro
         return userRepo.getById(req.user)
       })
       .then((user) => {
-        let userModel = transformer.user(user, jsonld)
+        let userModel = transformer(user)
         return res
           .send(userModel)
       })

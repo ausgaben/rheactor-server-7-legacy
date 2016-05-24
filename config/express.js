@@ -7,14 +7,17 @@ let BearerStrategy = require('passport-http-bearer').Strategy
 let JSONLD = require('../config/jsonld')
 let tokens = require('../util/tokens')
 let cors = require('cors')
+let ModelTransformer = require('../api/transformer')
 
 /**
  * @param {express.app} app
  * @param {nconf} config
  * @param repositories
  * @param {BackendEmitter} emitter
+ * @param {function} transformer
+ * @param {JSONLD} jsonld
  */
-module.exports = (app, config, repositories, emitter) => {
+module.exports = (app, config, repositories, emitter, transformer, jsonld) => {
   require('fast-url-parser').replace()
 
   app.enable('trust proxy')
@@ -39,7 +42,9 @@ module.exports = (app, config, repositories, emitter) => {
     }))
   let tokenAuth = passport.authenticate('bearer', {session: false, failWithError: true})
 
-  let jsonld = JSONLD(config.get('api_host'))
+  if (!jsonld) {
+    jsonld = JSONLD(config.get('api_host'))
+  }
 
   app.use(cors({
     origin: config.get('web_host'),
@@ -71,6 +76,12 @@ module.exports = (app, config, repositories, emitter) => {
 
   let environment = config.get('environment')
   let sendHttpProblem = require('../api/send-http-problem').bind(null, environment)
+  if (!transformer) {
+    let modelTransformer = new ModelTransformer()
+    transformer = (jsonld, model) => {
+      return modelTransformer.transform(jsonld, model)
+    }
+  }
 
   require('../api/route/index')(app, jsonld)
   require('../api/route/status')(app, config)
@@ -79,7 +90,7 @@ module.exports = (app, config, repositories, emitter) => {
   require('../api/route/login')(app, config, repositories.user, jsonld, sendHttpProblem)
   require('../api/route/password-change')(app, config, emitter, repositories.user, tokenAuth, sendHttpProblem)
   require('../api/route/activate-account')(app, config, emitter, repositories.user, tokenAuth, sendHttpProblem)
-  require('../api/route/user')(app, config, repositories.user, tokenAuth, jsonld, sendHttpProblem)
+  require('../api/route/user')(app, config, repositories.user, tokenAuth, sendHttpProblem, transformer.bind(null, jsonld))
   require('../api/route/avatar')(app, config, emitter, repositories.user, tokenAuth, jsonld, sendHttpProblem)
 
   app.use(function (err, req, res, next) {
