@@ -42,7 +42,8 @@
     "rheactor-value-objects": "^1.0.0",
     "rheactor-web-app": "^1.0.0",
     "rheactor-yadda-feature-runner": "^1.0.0",
-    "superagent": "^2.0.0-alpha.3"
+    "template-mailer-aws-lambda-client": "^1.0.0",
+    "transactional-emails": "^1.8.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -53,6 +54,7 @@
     "mocha-lcov-reporter": "^1.2.0",
     "semantic-release": "^4.3.5",
     "standard": "^7.1.0",
+    "superagent": "^2.0.0-alpha.3",
     "supertest": "^1.2.0",
     "toposort": "^1.0.0",
     "validate-commit-msg": "^2.6.1",
