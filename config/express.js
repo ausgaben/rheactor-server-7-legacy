@@ -70,7 +70,9 @@ module.exports = (app, config, repositories, emitter, transformer, jsonld) => {
   // Set content type
   const CONTENT_TYPE = config.get('mime_type') + '; charset=utf-8'
   app.use((req, res, next) => {
-    res.header('Content-Type', CONTENT_TYPE)
+    if (/\/api/.test(req.url)) {
+      res.header('Content-Type', CONTENT_TYPE)
+    }
     next()
   })
 
