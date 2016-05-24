@@ -109,4 +109,11 @@ module.exports = (app, config, repositories, emitter, transformer, jsonld) => {
     return res.status(500)
       .send(HttpProblem.fromException(err, 500))
   })
+
+  return {
+    jsonld,
+    tokenAuth,
+    sendHttpProblem,
+    verifyToken
+  }
 }
