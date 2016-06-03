@@ -20,10 +20,11 @@ module.exports = (templateMailerClient, config) => {
        * @param {ConfirmUserEmailCommand} cmd
        */
       (cmd) => {
+        let mailerConfig = config.get('template_mailer')
         return tokens.accountActivationToken(config.get('api_host'), config.get('private_key'), config.get('token_lifetime'), cmd.user)
           .then((token) => {
             return templateMailerClient
-              .send('networhk', 'networhk-email-verification', cmd.email.toString(), cmd.user.name(), {
+              .send(mailerConfig['smtp_config'], mailerConfig['prefix'] + mailerConfig['email_verification_template'], cmd.email.toString(), cmd.user.name(), {
                 recipient: {
                   firstname: cmd.user.firstname,
                   lastname: cmd.user.lastname

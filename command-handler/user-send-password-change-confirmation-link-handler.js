@@ -20,10 +20,11 @@ module.exports = (templateMailerClient, config) => {
        * @param {SendUserPasswordChangeConfirmationLinkCommand} cmd
        */
       (cmd) => {
+        let mailerConfig = config.get('template_mailer')
         return tokens.lostPasswordToken(config.get('api_host'), config.get('private_key'), config.get('token_lifetime'), cmd.user)
           .then((token) => {
             return templateMailerClient
-              .send('networhk', 'networhk-password-change', cmd.user.email.toString(), cmd.user.name(), {
+              .send(mailerConfig['smtp_config'], mailerConfig['template_prefix'] + mailerConfig['password_change_template'], cmd.user.email.toString(), cmd.user.name(), {
                 recipient: {
                   firstname: cmd.user.firstname,
                   lastname: cmd.user.lastname
