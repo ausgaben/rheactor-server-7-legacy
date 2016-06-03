@@ -27,7 +27,10 @@ nconf.defaults({
   },
   'private_key': null,
   'public_key': null,
-  'bcrypt_rounds': 14
+  'bcrypt_rounds': 14,
+  'template_mailer': {
+    'smtp_config': 'server'
+  }
 })
 
 module.exports = nconf
