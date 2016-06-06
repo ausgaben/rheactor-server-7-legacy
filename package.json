@@ -24,6 +24,7 @@
     "bcrypt": "^0.8.6",
     "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",
+    "colors": "^1.1.2",
     "cors": "^2.7.1",
     "express": "^4.13.4",
     "fast-url-parser": "^1.1.3",
