@@ -41,7 +41,7 @@
     "redis": "^2.6.0-2",
     "request-promise": "^3.0.0",
     "rheactor-event-store": "^1.0.0",
-    "rheactor-value-objects": "^1.0.0",
+    "rheactor-value-objects": "^1.1.0",
     "rheactor-web-app": "^1.0.0",
     "rheactor-yadda-feature-runner": "^1.0.0",
     "template-mailer-aws-lambda-client": "^1.0.0",
