@@ -12,7 +12,7 @@ module.exports = (repos, emitter, config) => {
   let c = new EmittedEventsHandlerRegistry(emitter)
   require('../event-handler/send-email-confirmation')()(c)
   let slackWebhook = config.get('slack:webhook')
-  if (slackWebhook) {
+  if (slackWebhook && config.get('environment') !== 'testing') {
     require('../event-handler/notify-slack-about-new-users')(new URIValue(slackWebhook), config.get('appName'))(c)
   }
 }
