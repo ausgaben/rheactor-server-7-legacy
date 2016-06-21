@@ -18,7 +18,7 @@ let User = require('rheactor-web-app/js/model/user')
 let sign = (iss, apiHost, privateKey, tokenLifetime, user) => {
   let jsonld = JSONLD(apiHost)
   let aggregateMeta = {}
-  aggregateMeta[user.constructor.name] = user.aggregateMeta()
+  aggregateMeta[user.constructor.name] = user.$aggregateMeta
   return Promise.try(() => {
     let token = jwt.sign(
       {

@@ -1,12 +1,16 @@
 'use strict'
 
+const util = require('util')
+const ModelEvent = require('rheactor-event-store/model-event')
+
 /**
- * @param {UserModel} user
+ * @param {String} aggregateId
+ * @param {Object} data
  * @constructor
- * @throws ValidationFailedException if the creation fails due to invalid data
  */
-function UserCreatedEvent (user) {
-  this.user = user
+function UserCreatedEvent (aggregateId, data) {
+  ModelEvent.call(this, aggregateId, 'UserCreatedEvent', data, Date.now())
 }
+util.inherits(UserCreatedEvent, ModelEvent)
 
 module.exports = UserCreatedEvent

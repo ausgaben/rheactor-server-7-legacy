@@ -5,8 +5,10 @@ let ConfirmUserEmailCommand = require('../command/user/confirm-email')
 
 /**
  * Send the user an email in order for them to confirm their email address
+ *
+ * @param {UserRepository} userRepo
  */
-module.exports = () => {
+module.exports = (userRepo) => {
   /**
    * {EmittedEventsHandlerRegistry} c
    */
@@ -16,10 +18,13 @@ module.exports = () => {
        * @param {UserCreatedEvent} event
        */
       (event) => {
-        if (event.user.isActive) {
-          return
-        }
-        c.emitter.emit(new ConfirmUserEmailCommand(event.user, event.user.email))
+        return userRepo.getById(event.aggregateId)
+          .then((user) => {
+            if (user.isActive) {
+              return
+            }
+            c.emitter.emit(new ConfirmUserEmailCommand(user, user.email))
+          })
       })
   }
 }

@@ -1,19 +1,17 @@
 'use strict'
 
 let ActivateUserCommand = require('../../../command/user/activate')
-let UserActivatedEvent = require('../../../event/user/activated')
 
 module.exports = {
   command: ActivateUserCommand,
   /**
    * @param {UserRepository} repository
    * @param {ActivateUserCommand} cmd
-   * @return {UserCreatedEvent}
+   * @return {UserActivatedEvent}
    */
   handler: (repository, cmd) => {
-    let event = new UserActivatedEvent(cmd.user)
-    cmd.user.apply(event.constructor.name)
-    return repository.persist(cmd.user.aggregateId(), event)
+    let event = cmd.user.activate()
+    return repository.eventStore.persist(event)
       .then(() => {
         return event
       })
