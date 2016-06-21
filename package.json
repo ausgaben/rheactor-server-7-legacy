@@ -7,7 +7,8 @@
     "test": "environment=testing ./node_modules/.bin/mocha --reporter=dot --timeout=1350 test/\\*\\*/\\*.js",
     "test:api": "environment=testing ./node_modules/.bin/mocha --reporter=dot --timeout=1350 test/yadda/\\*\\*/\\*.js",
     "test:backend": "environment=testing ./node_modules/.bin/mocha --reporter=dot --timeout=1350 test/mocha/\\*\\*/\\*.js",
-    "test:coverage": "environment=testing ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- -R dot --timeout=1350 test/\\*\\*/\\*.js && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage"
+    "test:coverage": "environment=testing ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test/\\*.js",
+    "test:coverage-travis": "environment=testing ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- -R dot --timeout=1350 test/\\*.js && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage"
   },
   "repository": {
     "type": "git",
@@ -40,7 +41,7 @@
     "passport-http-bearer": "^1.0.1",
     "redis": "^2.6.0-2",
     "request-promise": "^3.0.0",
-    "rheactor-event-store": "^2.0.0",
+    "rheactor-event-store": "^2.1.0",
     "rheactor-value-objects": "^1.1.0",
     "rheactor-web-app": "^1.0.0",
     "rheactor-yadda-feature-runner": "^1.0.0",

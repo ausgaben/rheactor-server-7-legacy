@@ -8,6 +8,7 @@ let expect = require('chai').expect
 let UserCreateCommand = require('../../../command/user/create')
 let EmailValue = require('rheactor-value-objects/email')
 let UserModel = require('../../../model/user')
+const ModelEvent = require('rheactor-event-store/model-event')
 
 describe('UserRepository', function () {
   before(helper.clearDb)
@@ -35,15 +36,20 @@ describe('UserRepository', function () {
 
       Promise.join(emitter.emit(c1), emitter.emit(c2))
         .spread((e1, e2) => {
-          let u1 = e1.user
-          let u2 = e2.user
-          expect(u1).to.be.instanceof(UserModel)
-          expect(u2).to.be.instanceof(UserModel)
-          expect(u1.email.toString()).to.equal('john.doe@example.invalid')
-          expect(u1.aggregateVersion()).to.equal(1)
-          expect(u2.email.toString()).to.equal('jane.doe@example.invalid')
-          expect(u2.aggregateVersion()).to.equal(1)
-          done()
+          expect(e1).to.be.instanceof(ModelEvent)
+          expect(e2).to.be.instanceof(ModelEvent)
+          return Promise
+            .join(
+              repository.getById(e1.aggregateId),
+              repository.getById(e2.aggregateId)
+            )
+            .spread((u1, u2) => {
+              expect(u1.email.toString()).to.equal('john.doe@example.invalid')
+              expect(u1.aggregateVersion()).to.equal(1)
+              expect(u2.email.toString()).to.equal('jane.doe@example.invalid')
+              expect(u2.aggregateVersion()).to.equal(1)
+              done()
+            })
         })
     })
 
