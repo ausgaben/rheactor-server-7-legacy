@@ -23,7 +23,10 @@ module.exports = (config, app) => {
       'connection',
       'content-length',
       'content-type',
-      'location'
+      'location',
+      'x-made-by',
+      'x-github',
+      'x-rheactor-app'
     ]
   }))
 
