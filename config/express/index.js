@@ -2,6 +2,7 @@
 
 const passport = require('passport')
 const BearerStrategy = require('passport-http-bearer').Strategy
+const tokenBearerStrategy = require('./token-bearer-strategy')
 const JSONLD = require('../jsonld')
 const tokens = require('../../util/tokens')
 const ModelTransformer = require('../../api/transformer')
@@ -33,19 +34,7 @@ module.exports = (app, config, repositories, emitter, transformer, jsonld) => {
   let verifyToken = (token) => {
     return tokens.verify(config.get('api_host'), config.get('public_key'), token)
   }
-  passport.use(new BearerStrategy(
-    function (token, cb) {
-      return verifyToken(token)
-        .then((t) => {
-          return cb(null, t.payload.sub_id, t)
-        })
-        .catch((err) => {
-          if (err.name === 'TokenExpiredError' || err.name === 'JsonWebTokenError') {
-            return cb(null, false)
-          }
-          return cb(err)
-        })
-    }))
+  passport.use(new BearerStrategy(tokenBearerStrategy(verifyToken)))
   let tokenAuth = passport.authenticate('bearer', {session: false, failWithError: true})
 
   require('../../api/route/index')(app, jsonld)
