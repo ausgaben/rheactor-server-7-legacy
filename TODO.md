@@ -2,7 +2,6 @@
 
 ## Backend
 
-- Model setters should create the events (in progress)
 - Add aggregated model cache
 - Process backend events asynchronously
   - push notification commands to AWS SNS, which calls Lambda to send emails
