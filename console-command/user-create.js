@@ -19,10 +19,18 @@ module.exports = {
           avatar = new URIValue(avatar)
         }
         return backend.emitter.emit(new CreateUserCommand(new EmailValue(email), firstname, lastname, hashedPassword, true, avatar))
-          .then((event) => {
-            console.log('User created', event.user.name(), event.user.email.toString())
-            console.log('Password is 12345678')
-          })
+          .then(
+            /**
+             * @param {UserCreatedEvent} event
+             */
+            event => {
+              return backend.repositories.user.getById(event.aggregateId)
+                .then(user => {
+                  console.log('User created', user.name(), user.email.toString())
+                  console.log('Password is 12345678')
+                })
+
+            })
       })
   }
 }
