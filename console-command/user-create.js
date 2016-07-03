@@ -29,7 +29,6 @@ module.exports = {
                   console.log('User created', user.name(), user.email.toString())
                   console.log('Password is 12345678')
                 })
-
             })
       })
   }
