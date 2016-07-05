@@ -9,6 +9,7 @@ let emitter = backend.emitter
 // HTTP API
 let express = require('express')
 let app = express()
+app.set('env', 'test') // Suppress errors logged from express.js
 require('../config/express')(app, config, repositories, emitter)
 let port = config.get('port')
 let host = config.get('host')
