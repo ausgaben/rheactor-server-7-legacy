@@ -4,7 +4,7 @@ let Promise = require('bluebird')
 let multer = require('multer')
 let UpdateUserAvatarCommand = require('../../command/user/update-avatar')
 let URIValue = require('rheactor-value-objects/uri')
-let Errors = require('rheactor-value-objects/errors')
+let ValidationFailedException = require('rheactor-value-objects/errors/validation-failed')
 let AvatarStore = require('../../services/avatar-store')
 
 /**
@@ -25,7 +25,7 @@ module.exports = (app, config, emitter, userRepository, tokenAuth, jsonld, sendH
     Promise
       .try(() => {
         if (!req.file.path) {
-          throw new Errors.ValidationFailedException('No file uploaded!')
+          throw new ValidationFailedException('No file uploaded!')
         }
       })
       .then(() => {
@@ -35,7 +35,18 @@ module.exports = (app, config, emitter, userRepository, tokenAuth, jsonld, sendH
         user = u
       })
       .then(() => {
-        return avatarStore.upload(req.file.path, req.user)
+        let type
+        switch (req.file.mimetype) {
+          case 'image/jpeg':
+            type = 'jpg'
+            break
+          case 'image/png':
+            type = 'png'
+            break
+          default:
+            throw new ValidationFailedException('Unsupported mime type', req.file.mimetype)
+        }
+        return avatarStore.upload(req.file.path, req.user, type)
       })
       .then((url) => {
         return emitter.emit(new UpdateUserAvatarCommand(user, new URIValue(url)))
