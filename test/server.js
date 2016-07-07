@@ -14,7 +14,7 @@ require('../config/express')(app, config, repositories, emitter)
 let port = config.get('port')
 let host = config.get('host')
 app.listen(port, host)
-console.log('Web:', config.get('web_host'))
+console.log('Web:', config.get('web_host') + config.get('base_href'))
 console.log('API:', config.get('api_host'))
 module.exports = {
   app,

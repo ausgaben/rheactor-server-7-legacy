@@ -29,7 +29,8 @@ module.exports = (templateMailerClient, config) => {
                   firstname: cmd.user.firstname,
                   lastname: cmd.user.lastname
                 },
-                link: config.get('web_host') + '/#!/password-change/' + token.token,
+                link: config.get('web_host') + config.get('base_href') + '#!/password-change/' + token.token,
+                baseHref: config.get('base_href'),
                 webHost: config.get('web_host')
               })
               .then(() => {

@@ -15,6 +15,7 @@ module.exports = {
       .spread((email) => {
         let data = email.defaults
         data.webHost = backend.config.get('web_host')
+        data.baseHref = backend.config.get('base_href')
         return new TemplateMailerClient(mailerConfig['endpoint'], mailerConfig['api_key'])
           .send(mailerConfig['smtp_config'], mailerConfig['template_prefix'] + template, to, name, data)
           .then(() => {

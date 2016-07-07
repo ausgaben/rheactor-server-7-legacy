@@ -16,6 +16,7 @@ nconf.defaults({
   'host': host,
   'api_host': 'http://' + host + ':' + port,
   'web_host': 'http://' + host + ':' + port,
+  'base_href': '/',
   'deployVersion': +new Date(),
   'app': process.env.npm_package_name,
   'root': path.normalize(path.join(__dirname, '/../..')),
