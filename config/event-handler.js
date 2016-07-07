@@ -13,6 +13,6 @@ module.exports = (repos, emitter, config) => {
   require('../event-handler/send-email-confirmation')(repos.user)(c)
   let slackWebhook = config.get('slack:webhook')
   if (slackWebhook && config.get('environment') !== 'testing') {
-    require('../event-handler/notify-slack-about-new-users')(new URIValue(slackWebhook), config.get('appName'))(c)
+    require('../event-handler/notify-slack-about-new-users')(new URIValue(slackWebhook), config.get('appName'), repos.user)(c)
   }
 }

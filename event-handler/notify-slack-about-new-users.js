@@ -9,33 +9,37 @@ const SlackNotified = require('../event/slack-notified')
  *
  * @param {URIValue} webhookURI
  * @param {String} appName
+ * @param {UserRepository} userRepo
  */
-module.exports = (webhookURI, appName) => {
+module.exports = (webhookURI, appName, userRepo) => {
   /**
    * {EmittedEventsHandlerRegistry} c
    */
-  return (c) => {
+  return c => {
     c.addHandler(UserActivatedEvent,
       /**
        * @param {UserActivatedEvent} event
        */
-      (event) => {
-        return request({
-          method: 'POST',
-          uri: webhookURI.toString(),
-          body: {
-            username: appName,
-            text: ':rocket: ' + event.user.name() + ' ' + event.user.email.toString() + ' just confirmed their account!'
-          },
-          json: true,
-          transform: () => {
-            // Response is: 'ok'
-            return new SlackNotified(event)
-          }
-        })
-        .catch((err) => {
-          console.error('Slack webhook failed', err)
-        })
-      })
+      event => userRepo.getById(event.aggregateId)
+        .then(
+          user => request(
+            {
+              method: 'POST',
+              uri: webhookURI.toString(),
+              body: {
+                username: appName,
+                text: ':rocket: ' + user.name() + ' ' + user.email.toString() + ' just confirmed their account!'
+              },
+              json: true,
+              transform: () => {
+                // Response is: 'ok'
+                return new SlackNotified(event)
+              }
+            })
+            .catch((err) => {
+              console.error('Slack webhook failed', err)
+            })
+        )
+    )
   }
 }
