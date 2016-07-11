@@ -1,20 +1,20 @@
 'use strict'
 
-let util = require('util')
-let Joi = require('joi')
-let EmailValue = require('rheactor-value-objects/email')
-let AggregateRoot = require('rheactor-event-store/aggregate-root')
-let ValidationFailedException = require('rheactor-value-objects/errors').ValidationFailedException
-let Promise = require('bluebird')
-let _map = require('lodash/map')
-let Errors = require('rheactor-value-objects/errors')
-let UserCreatedEvent = require('../event/user/created')
-let UserPasswordChangedEvent = require('../event/user/password-changed')
-let UserActivatedEvent = require('../event/user/activated')
-let UserAvatarUpdatedEvent = require('../event/user/avatar-updated')
-let URIValue = require('rheactor-value-objects/uri')
+const util = require('util')
+const Joi = require('joi')
+const EmailValue = require('rheactor-value-objects/email')
+const AggregateRoot = require('rheactor-event-store/aggregate-root')
+const ValidationFailedException = require('rheactor-value-objects/errors').ValidationFailedException
+const Promise = require('bluebird')
+const _map = require('lodash/map')
+const Errors = require('rheactor-value-objects/errors')
+const UserCreatedEvent = require('../event/user/created')
+const UserPasswordChangedEvent = require('../event/user/password-changed')
+const UserActivatedEvent = require('../event/user/activated')
+const UserAvatarUpdatedEvent = require('../event/user/avatar-updated')
+const URIValue = require('rheactor-value-objects/uri')
 
-let passwordRegex = /^\$2a\$\d+\$.+/
+const passwordRegex = /^\$2a\$\d+\$.+/
 
 /**
  * @param {EmailValue} email
@@ -40,13 +40,14 @@ function UserModel (email, firstname, lastname, password, active, avatar) {
 
   Joi.validate({email, firstname, lastname, password, active, avatar}, schema, {stripUnknown: true}, (err, data) => {
     if (err) {
-      throw new ValidationFailedException('UserModel validation failed', data, err)
+      throw new ValidationFailedException('UserModel validation failed: ' + err, data, err)
     }
     this.email = data.email
     this.firstname = data.firstname
     this.lastname = data.lastname
     this.password = data.password
     this.isActive = active
+    if (active) this.activatedAt = Date.now()
     this.avatar = avatar
   })
 }
@@ -93,6 +94,7 @@ UserModel.prototype.activate = function () {
     throw new Errors.ConflictError('Already activated!')
   }
   this.isActive = true
+  this.activatedAt = Date.now()
   return new UserActivatedEvent(self.aggregateId())
 }
 
@@ -128,7 +130,6 @@ UserModel.aggregate = function (id, events) {
       return user
     })
     .catch((err) => {
-      // TODO: Log
       console.error('UserModel error', err)
       return null
     })
@@ -140,26 +141,28 @@ UserModel.aggregate = function (id, events) {
  * @param {ModelEvent} event
  */
 UserModel.prototype.applyEvent = function (event) {
-  let self = this
-  let data = event.data
+  const self = this
+  const data = event.data
   switch (event.name) {
     case 'UserCreatedEvent':
-      this.email = new EmailValue(data.email)
-      this.firstname = data.firstname
-      this.lastname = data.lastname
-      this.password = data.password
-      this.isActive = data.isActive
+      self.email = new EmailValue(data.email)
+      self.firstname = data.firstname
+      self.lastname = data.lastname
+      self.password = data.password
+      self.isActive = data.isActive
+      self.activatedAt = event.createdAt
       if (data.avatar) {
-        this.avatar = new URIValue(data.avatar)
+        self.avatar = new URIValue(data.avatar)
       }
-      this.persisted(event.aggregateId, event.createdAt)
+      self.persisted(event.aggregateId, event.createdAt)
       break
     case 'UserPasswordChangedEvent':
       self.setPassword(data.password)
       self.updated(event.createdAt)
       break
     case 'UserActivatedEvent':
-      self.activate()
+      self.isActive = true
+      self.activatedAt = event.createdAt
       self.updated(event.createdAt)
       break
     case 'UserAvatarUpdatedEvent':
