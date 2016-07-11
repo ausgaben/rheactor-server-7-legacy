@@ -151,6 +151,15 @@ module.exports = {
       next()
     })
 
+    .when('I store the link of "$relatedContext" as "$storage"', function (relatedContext, storage, next) {
+      let context = this.ctx
+      let matched = _filter(context.response.body.$links, (link) => {
+        return link.context === relatedContext
+      })
+      utils.data(context, storage, matched[0].href)
+      next()
+    })
+
     .when('I store the link to "$relation" of the ([0-9]+)[a-z]+ item as "$storage"', function (relation, num, storage, next) {
       let context = this.ctx
       let matched = _filter(context.response.body.items[num - 1].$links, (link) => {
