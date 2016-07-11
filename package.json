@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/RHeactor/server#readme",
   "dependencies": {
-    "aws-sdk": "^2.4.4",
+    "aws-sdk": "^2.4.6",
     "bcrypt": "^0.8.7",
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
