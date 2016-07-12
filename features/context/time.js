@@ -24,7 +24,7 @@ module.exports = {
       }
       next()
     })
-    .given('we are back', function (next) {
+    .given('we are back to the present', function (next) {
       clock.uninstall()
       next()
     })
