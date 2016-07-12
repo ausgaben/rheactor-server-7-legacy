@@ -32,7 +32,7 @@ module.exports = {
       const context = this.ctx
       switch (direction) {
         case 'future':
-          expect(Math.round(moment.duration(Date.now() - +context.response.body[node]).asDays())).to.equal(num)
+          expect(Math.round(moment.duration(+context.response.body[node] - Date.now()).asDays())).to.equal(+num)
           break
         case 'past':
           expect(Math.round(moment.duration(Date.now() - +context.response.body[node]).asDays())).to.equal(-num)
