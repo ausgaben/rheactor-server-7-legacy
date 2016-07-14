@@ -6,7 +6,7 @@ const dictionary = new Yadda.Dictionary()
 const tokens = require('../../util/tokens')
 const EmailValue = require('rheactor-value-objects/email')
 const utils = require('./util/storage')
-const DeactivateUserCommand = require('../../../server/command/user/deactivate')
+const DeactivateUserCommand = require('../../command/user/deactivate')
 
 module.exports = {
   library: English.library(dictionary)
