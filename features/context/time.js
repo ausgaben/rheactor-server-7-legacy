@@ -5,7 +5,7 @@ const English = Yadda.localisation.English
 const dictionary = new Yadda.Dictionary()
 const lolex = require('lolex')
 const moment = require('moment')
-const ValidationFailedException = require('rheactor-value-objects/errors/validation-failed')
+const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
 const expect = require('chai').expect
 
 var clock
@@ -20,7 +20,7 @@ module.exports = {
           clock = lolex.install(moment().subtract(num, 'days').valueOf())
           break
         default:
-          throw new ValidationFailedException('Invalid direction: ' + direction)
+          throw new ValidationFailedError('Invalid direction: ' + direction)
       }
       next()
     })
@@ -38,7 +38,7 @@ module.exports = {
           expect(Math.round(moment.duration(Date.now() - +context.response.body[node]).asDays())).to.equal(-num)
           break
         default:
-          throw new ValidationFailedException('Invalid direction: ' + direction)
+          throw new ValidationFailedError('Invalid direction: ' + direction)
       }
       next()
     })

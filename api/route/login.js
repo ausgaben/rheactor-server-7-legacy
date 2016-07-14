@@ -1,14 +1,14 @@
 'use strict'
 
-let Promise = require('bluebird')
-let bcrypt = require('bcrypt')
-Promise.promisifyAll(bcrypt)
-let jwt = require('jsonwebtoken')
-let JsonWebToken = require('rheactor-web-app/js/model/jsonwebtoken')
-let EmailValue = require('rheactor-value-objects/email')
-let User = require('rheactor-web-app/js/model/user')
-let Errors = require('rheactor-value-objects/errors')
-let Joi = require('joi')
+const Promise = require('bluebird')
+const bcrypt = Promise.promisifyAll(require('bcrypt'))
+const jwt = require('jsonwebtoken')
+const JsonWebToken = require('rheactor-web-app/js/model/jsonwebtoken')
+const EmailValue = require('rheactor-value-objects/email')
+const User = require('rheactor-web-app/js/model/user')
+const AccessDeniedError = require('rheactor-value-objects/errors/access-denied')
+const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
+const Joi = require('joi')
 
 /**
  * Manages user logins.
@@ -31,17 +31,17 @@ module.exports = (app, config, userRepository, jsonld, sendHttpProblem) => {
         })
         return Joi.validate(req.body, schema, {stripUnknown: true}, (err, data) => {
           if (err) {
-            throw new Errors.ValidationFailedException('Invalid data', data, err)
+            throw new ValidationFailedError('Invalid data', data, err)
           }
           return userRepository.getByEmail(new EmailValue(data.email))
             .then((user) => {
               if (!user.isActive) {
-                throw new Errors.AccessDeniedError(req.url, 'Inactive account', {email: data.email})
+                throw new AccessDeniedError(req.url, 'Inactive account', {email: data.email})
               }
               return bcrypt.compareAsync(data.password, user.password)
                 .then((match) => {
                   if (!match) {
-                    throw new Errors.AccessDeniedError(req.url, 'Invalid password provided', {email: data.email})
+                    throw new AccessDeniedError(req.url, 'Invalid password provided', {email: data.email})
                   } else {
                     return jwt.sign(
                       {},

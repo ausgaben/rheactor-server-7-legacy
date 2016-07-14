@@ -1,7 +1,7 @@
 'use strict'
 
-let Promise = require('bluebird')
-let Errors = require('rheactor-value-objects/errors')
+const Promise = require('bluebird')
+const AccessDeniedError = require('rheactor-value-objects/errors/access-denied')
 
 /**
  * @param {express.app} app
@@ -16,7 +16,7 @@ module.exports = function (app, config, userRepo, tokenAuth, sendHttpProblem, tr
     Promise
       .try(() => {
         if (req.params.id !== req.user) {
-          throw new Errors.AccessDeniedError(req.url, 'This is not you.')
+          throw new AccessDeniedError(req.url, 'This is not you.')
         }
         return userRepo.getById(req.user)
       })

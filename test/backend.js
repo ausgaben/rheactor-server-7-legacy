@@ -2,13 +2,14 @@
 
 const Promise = require('bluebird')
 Promise.longStackTraces()
-
+const EntryNotFoundError = require('rheactor-value-objects/errors/entry-not-found')
+const EntryAlreadyExistsError = require('rheactor-value-objects/errors/entry-already-exists')
 const config = require('./config')
 
 // Event listening
 const emitter = require('../services/emitter')
 emitter.on('error', (err) => {
-  if (/EntityNotFoundError/.test(err.name) || /EntryAlreadyExistsError/.test(err.name)) {
+  if (EntryNotFoundError.is(err) || EntryAlreadyExistsError.is(err)) {
     return
   }
   throw err

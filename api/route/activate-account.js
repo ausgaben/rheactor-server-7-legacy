@@ -1,10 +1,10 @@
 'use strict'
 
-let Promise = require('bluebird')
-let ActivateUserCommand = require('../../command/user/activate')
-let tokens = require('../../util/tokens')
-let Errors = require('rheactor-value-objects/errors')
-let checkVersion = require('../check-version')
+const Promise = require('bluebird')
+const ActivateUserCommand = require('../../command/user/activate')
+const tokens = require('../../util/tokens')
+const AccessDeniedError = require('rheactor-value-objects/errors/access-denied')
+const checkVersion = require('../check-version')
 
 /**
  * Manages reset-password requests.
@@ -23,7 +23,7 @@ module.exports = function (app, config, emitter, userRepository, tokenAuth, send
     Promise
       .try(() => {
         if (!tokens.isAccountActivationToken(req.authInfo)) {
-          throw new Errors.AccessDeniedError(req.url, 'Not an account activation token')
+          throw new AccessDeniedError(req.url, 'Not an account activation token')
         }
         return userRepository.getById(req.user)
           .then((user) => {

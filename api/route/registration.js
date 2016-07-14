@@ -1,11 +1,11 @@
 'use strict'
 
-let Promise = require('bluebird')
-let EmailValue = require('rheactor-value-objects/email')
-let CreateUserCommand = require('../../command/user/create')
-let bcrypt = require('bcrypt')
-Promise.promisifyAll(bcrypt)
-let Errors = require('rheactor-value-objects/errors')
+const Promise = require('bluebird')
+const EmailValue = require('rheactor-value-objects/email')
+const CreateUserCommand = require('../../command/user/create')
+const bcrypt = Promise.promisifyAll(require('bcrypt'))
+const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
+const ConflictError = require('rheactor-value-objects/errors/conflict')
 
 /**
  * @param {express.app} app
@@ -19,7 +19,7 @@ module.exports = function (app, config, emitter, userRepository, sendHttpProblem
     Promise
       .try(() => {
         if (!req.body.password) {
-          throw new Errors.ValidationFailedException('missing password')
+          throw new ValidationFailedError('missing password')
         }
         return bcrypt
           .genSaltAsync(config.get('bcrypt_rounds'))
@@ -30,7 +30,7 @@ module.exports = function (app, config, emitter, userRepository, sendHttpProblem
             return userRepository.findByEmail(email)
               .then((user) => {
                 if (user) {
-                  throw new Errors.ConflictError('Already registered!')
+                  throw new ConflictError('Already registered!')
                 }
                 emitter.emit(new CreateUserCommand(email, req.body.firstname, req.body.lastname, hashedPassword))
               })

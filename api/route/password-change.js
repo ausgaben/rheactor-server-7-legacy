@@ -1,15 +1,15 @@
 'use strict'
 
-let Promise = require('bluebird')
-let EmailValue = require('rheactor-value-objects/email')
-let SendUserPasswordChangeConfirmationLinkCommand = require('../../command/user/send-password-change-confirmation-link')
-let ChangeUserPasswordCommand = require('../../command/user/password-change')
-let tokens = require('../../util/tokens')
-let bcrypt = require('bcrypt')
-Promise.promisifyAll(bcrypt)
-let Errors = require('rheactor-value-objects/errors')
-let Joi = require('joi')
-let checkVersion = require('../check-version')
+const Promise = require('bluebird')
+const EmailValue = require('rheactor-value-objects/email')
+const SendUserPasswordChangeConfirmationLinkCommand = require('../../command/user/send-password-change-confirmation-link')
+const ChangeUserPasswordCommand = require('../../command/user/password-change')
+const tokens = require('../../util/tokens')
+const bcrypt = Promise.promisifyAll(require('bcrypt'))
+const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
+const AccessDeniedError = require('rheactor-value-objects/errors/access-denied')
+const Joi = require('joi')
+const checkVersion = require('../check-version')
 
 /**
  * Manages reset-password requests.
@@ -32,7 +32,7 @@ module.exports = function (app, config, emitter, userRepository, tokenAuth, send
         })
         return Joi.validate(req.body, schema, {stripUnknown: true}, (err, data) => {
           if (err) {
-            throw new Errors.ValidationFailedException('Not an email', data, err)
+            throw new ValidationFailedError('Not an email', data, err)
           }
           let email = new EmailValue(data.email)
           return userRepository.getByEmail(email)
@@ -60,10 +60,10 @@ module.exports = function (app, config, emitter, userRepository, tokenAuth, send
         })
         return Joi.validate(req.body, schema, {stripUnknown: true}, (err, data) => {
           if (err) {
-            throw new Errors.ValidationFailedException('Invalid password', data, err)
+            throw new ValidationFailedError('Invalid password', data, err)
           }
           if (!tokens.isLostPasswordToken(req.authInfo)) {
-            throw new Errors.AccessDeniedError(req.url, 'Not a password change token')
+            throw new AccessDeniedError(req.url, 'Not a password change token')
           }
           return userRepository.getById(req.user)
             .then((user) => {

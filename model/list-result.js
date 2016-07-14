@@ -1,7 +1,7 @@
 'use strict'
 
-let Joi = require('joi')
-let ValidationFailedException = require('rheactor-value-objects/errors').ValidationFailedException
+const Joi = require('joi')
+const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
 
 let schema = Joi.object().keys({
   items: Joi.array().required(),
@@ -16,12 +16,12 @@ let schema = Joi.object().keys({
  * @param {String} nextIndex
  * @param {String} prevIndex
  * @constructor
- * @throws ValidationFailedException if the creation fails due to invalid data
+ * @throws ValidationFailedError if the creation fails due to invalid data
  */
 function ListResultModel (items, total, nextIndex, prevIndex) {
   Joi.validate({items, total, nextIndex, prevIndex}, schema, (err, data) => {
     if (err) {
-      throw new ValidationFailedException('ListResultModel validation failed', data, err)
+      throw new ValidationFailedError('ListResultModel validation failed', data, err)
     }
   })
   this.items = items

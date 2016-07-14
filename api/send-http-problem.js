@@ -3,13 +3,12 @@
 const Promise = require('bluebird')
 const HttpProblem = require('rheactor-web-app/js/model/http-problem')
 const AccessDeniedError = require('rheactor-value-objects/errors/access-denied')
-const PermissionDeniedError = require('rheactor-value-objects/errors/permission-denied')
-const EntityNotFoundError = require('rheactor-value-objects/errors/entity-not-found')
+const EntryNotFoundError = require('rheactor-value-objects/errors/entry-not-found')
 const ConflictError = require('rheactor-value-objects/errors/conflict')
 const EntryAlreadyExistsError = require('rheactor-value-objects/errors/entry-already-exists')
-const ValidationFailedException = require('rheactor-value-objects/errors/validation-failed')
-const EntityDeletedError = require('rheactor-value-objects/errors/entity-deleted')
-const PaymentRequiredException = require('rheactor-value-objects/errors/payment-required')
+const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
+const EntryDeletedError = require('rheactor-value-objects/errors/entry-deleted')
+const PaymentRequiredError = require('rheactor-value-objects/errors/payment-required')
 
 /**
  * @param {string} environment
@@ -21,23 +20,23 @@ let sendHttpProblem = (environment, res, err) => {
   let status = 500
   let punish = false
   let punishTime = environment === 'production' ? 1000 : 0
-  if (err.name === 'TokenExpiredError' || err.name === AccessDeniedError.name || err.name === PermissionDeniedError.name) {
+  if (err.name === 'TokenExpiredError' || err.name === AccessDeniedError.name) {
     status = 403
     punish = true
   }
-  if (err.name === EntityNotFoundError.name) {
+  if (err.name === EntryNotFoundError.name) {
     status = 404
   }
   if (err.name === ConflictError.name || err.name === EntryAlreadyExistsError.name) {
     status = 409
   }
-  if (err.name === ValidationFailedException.name) {
+  if (err.name === ValidationFailedError.name) {
     status = 400
   }
-  if (err.name === EntityDeletedError.name) {
+  if (err.name === EntryDeletedError.name) {
     status = 404
   }
-  if (err.name === PaymentRequiredException.name) {
+  if (err.name === PaymentRequiredError.name) {
     status = 402
   }
   if (status === 500) { // Unknown

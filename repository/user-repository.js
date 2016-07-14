@@ -4,7 +4,7 @@ const AggregateRepository = require('rheactor-event-store/aggregate-repository')
 const AggregateIndex = require('rheactor-event-store/aggregate-index')
 const util = require('util')
 const UserModel = require('../model/user')
-const Errors = require('rheactor-value-objects/errors')
+const EntryNotFoundError = require('rheactor-value-objects/errors/entry-not-found')
 const Promise = require('bluebird')
 const UserCreatedEvent = require('../event/user/created')
 
@@ -30,10 +30,7 @@ UserRepository.prototype.findByEmail = function (email) {
   let self = this
   return self
     .getByEmail(email)
-    .catch((err) => {
-      if (!/EntityNotFoundError/.test(err.name)) {
-        console.error('UserRepository error', err)
-      }
+    .catch(err => EntryNotFoundError.is(err), () => {
       return null
     })
 }
@@ -49,7 +46,7 @@ UserRepository.prototype.getByEmail = function (email) {
   return self.index.find('email', email.toString())
     .then((id) => {
       if (!id) {
-        throw new Errors.EntityNotFoundError('User with email "' + email.toString() + '" not found')
+        throw new EntryNotFoundError('User with email "' + email.toString() + '" not found')
       }
       return self.constructor.super_.prototype.getById.call(self, id)
     })

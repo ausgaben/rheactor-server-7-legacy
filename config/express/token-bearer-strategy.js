@@ -1,8 +1,8 @@
 'use strict'
 
 const Promise = require('bluebird')
-const Errors = require('rheactor-value-objects/errors')
 const JsonWebTokenError = require('jsonwebtoken/lib/JsonWebTokenError')
+const TokenExpiredError = require('rheactor-value-objects/errors/token-expired')
 
 module.exports = (verifyToken) => {
   return (token, cb) => {
@@ -11,7 +11,7 @@ module.exports = (verifyToken) => {
       .then((t) => {
         return cb(null, t.payload.sub_id, t)
       })
-      .catch(Errors.TokenExpiredError, JsonWebTokenError, () => {
+      .catch(TokenExpiredError, JsonWebTokenError, () => {
         return cb(null, false)
       })
       .catch((err) => {

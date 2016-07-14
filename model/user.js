@@ -4,11 +4,11 @@ const util = require('util')
 const Joi = require('joi')
 const EmailValue = require('rheactor-value-objects/email')
 const AggregateRoot = require('rheactor-event-store/aggregate-root')
-const ValidationFailedException = require('rheactor-value-objects/errors').ValidationFailedException
+const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
 const Promise = require('bluebird')
 const _map = require('lodash/map')
 const ConflictError = require('rheactor-value-objects/errors/conflict')
-const UnhandledDomainEventError = require('rheactor-value-objects/errors/unhandled-domainevent')
+const UnhandledDomainEventError = require('rheactor-value-objects/errors/unhandled-domain-event')
 const UserCreatedEvent = require('../event/user/created')
 const UserPasswordChangedEvent = require('../event/user/password-changed')
 const UserActivatedEvent = require('../event/user/activated')
@@ -26,7 +26,7 @@ const passwordRegex = /^\$2a\$\d+\$.+/
  * @param {Boolean} active
  * @param {URIValue} avatar
  * @constructor
- * @throws ValidationFailedException if the creation fails due to invalid data
+ * @throws ValidationFailedError if the creation fails due to invalid data
  */
 function UserModel (email, firstname, lastname, password, active, avatar) {
   AggregateRoot.call(this)
@@ -42,7 +42,7 @@ function UserModel (email, firstname, lastname, password, active, avatar) {
 
   Joi.validate({email, firstname, lastname, password, active, avatar}, schema, {stripUnknown: true}, (err, data) => {
     if (err) {
-      throw new ValidationFailedException('UserModel validation failed: ' + err, data, err)
+      throw new ValidationFailedError('UserModel validation failed: ' + err, data, err)
     }
     this.email = data.email
     this.firstname = data.firstname
@@ -58,7 +58,7 @@ util.inherits(UserModel, AggregateRoot)
 /**
  * @param {String} password
  * @return {UserPasswordChangedEvent}
- * @throws ValidationFailedException
+ * @throws ValidationFailedError
  */
 UserModel.prototype.setPassword = function (password) {
   let self = this
@@ -68,7 +68,7 @@ UserModel.prototype.setPassword = function (password) {
 
   return Joi.validate({password}, schema, {stripUnknown: true}, (err, data) => {
     if (err) {
-      throw new ValidationFailedException('UserModel.password validation failed', data, err)
+      throw new ValidationFailedError('UserModel.password validation failed', data, err)
     }
     this.password = data.password
     return new UserPasswordChangedEvent(self.aggregateId(), {password: data.password})
@@ -79,7 +79,7 @@ UserModel.prototype.setAvatar = function (avatar) {
   let self = this
   return Joi.validate(avatar, Joi.object().type(URIValue).required(), (err, priority) => {
     if (err) {
-      throw new ValidationFailedException('ContributionModel.setAvatar validation failed', priority, err)
+      throw new ValidationFailedError('ContributionModel.setAvatar validation failed', priority, err)
     }
     self.avatar = avatar
     return new UserAvatarUpdatedEvent(self.aggregateId(), {avatar: avatar.toString()})
