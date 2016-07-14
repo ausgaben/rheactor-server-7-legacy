@@ -1,16 +1,16 @@
 'use strict'
 
-let ActivateUserCommand = require('../../../command/user/activate')
+let DeactivateUserCommand = require('../../../command/user/deactivate')
 
 module.exports = {
-  command: ActivateUserCommand,
+  command: DeactivateUserCommand,
   /**
    * @param {UserRepository} repository
    * @param {DeactivateUserCommand} cmd
    * @return {UserDeactivatedEvent}
    */
   handler: (repository, cmd) => {
-    let event = cmd.user.activate()
+    let event = cmd.user.deactivate()
     return repository.eventStore.persist(event)
       .then(() => {
         return event

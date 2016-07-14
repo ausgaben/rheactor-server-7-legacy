@@ -7,10 +7,12 @@ const AggregateRoot = require('rheactor-event-store/aggregate-root')
 const ValidationFailedException = require('rheactor-value-objects/errors').ValidationFailedException
 const Promise = require('bluebird')
 const _map = require('lodash/map')
-const Errors = require('rheactor-value-objects/errors')
+const ConflictError = require('rheactor-value-objects/errors/conflict')
+const UnhandledDomainEventError = require('rheactor-value-objects/errors/unhandled-domainevent')
 const UserCreatedEvent = require('../event/user/created')
 const UserPasswordChangedEvent = require('../event/user/password-changed')
 const UserActivatedEvent = require('../event/user/activated')
+const UserDeactivatedEvent = require('../event/user/deactivated')
 const UserAvatarUpdatedEvent = require('../event/user/avatar-updated')
 const URIValue = require('rheactor-value-objects/uri')
 
@@ -85,17 +87,31 @@ UserModel.prototype.setAvatar = function (avatar) {
 }
 
 /**
- * @return {UserActivatedEvent}
+ * @return {UserDeactivatedEvent}
  * @throws {ConflictError}
  */
 UserModel.prototype.activate = function () {
   let self = this
   if (this.isActive) {
-    throw new Errors.ConflictError('Already activated!')
+    throw new ConflictError('Already activated!')
   }
   this.isActive = true
   this.activatedAt = Date.now()
   return new UserActivatedEvent(self.aggregateId())
+}
+
+/**
+ * @return {UserDeactivatedEvent}
+ * @throws {ConflictError}
+ */
+UserModel.prototype.deactivate = function () {
+  let self = this
+  if (!this.isActive) {
+    throw new ConflictError('Not activated!')
+  }
+  this.isActive = false
+  this.deactivatedAt = Date.now()
+  return new UserDeactivatedEvent(self.aggregateId())
 }
 
 /**
@@ -144,7 +160,7 @@ UserModel.prototype.applyEvent = function (event) {
   const self = this
   const data = event.data
   switch (event.name) {
-    case 'UserCreatedEvent':
+    case UserCreatedEvent.name:
       self.email = new EmailValue(data.email)
       self.firstname = data.firstname
       self.lastname = data.lastname
@@ -156,22 +172,27 @@ UserModel.prototype.applyEvent = function (event) {
       }
       self.persisted(event.aggregateId, event.createdAt)
       break
-    case 'UserPasswordChangedEvent':
+    case UserPasswordChangedEvent.name:
       self.setPassword(data.password)
       self.updated(event.createdAt)
       break
-    case 'UserActivatedEvent':
+    case UserActivatedEvent.name:
       self.isActive = true
       self.activatedAt = event.createdAt
       self.updated(event.createdAt)
       break
-    case 'UserAvatarUpdatedEvent':
+    case UserDeactivatedEvent.name:
+      self.isActive = false
+      self.deactivatedAt = event.createdAt
+      self.updated(event.createdAt)
+      break
+    case UserAvatarUpdatedEvent.name:
       self.setAvatar(new URIValue(data.avatar))
       self.updated(event.createdAt)
       break
     default:
       console.error('Unhandled UserModel event', event.name)
-      throw new Errors.UnhandledDomainEvent(event.name)
+      throw new UnhandledDomainEventError(event.name)
   }
 }
 

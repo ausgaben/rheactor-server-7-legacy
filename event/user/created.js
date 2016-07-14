@@ -9,7 +9,7 @@ const ModelEvent = require('rheactor-event-store/model-event')
  * @constructor
  */
 function UserCreatedEvent (aggregateId, data) {
-  ModelEvent.call(this, aggregateId, 'UserCreatedEvent', data, Date.now())
+  ModelEvent.call(this, aggregateId, UserCreatedEvent.name, data, Date.now())
 }
 util.inherits(UserCreatedEvent, ModelEvent)
 

@@ -20,5 +20,6 @@ module.exports = {
   app,
   repositories,
   redis,
-  config
+  config,
+  emitter
 }

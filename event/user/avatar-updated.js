@@ -9,7 +9,7 @@ const ModelEvent = require('rheactor-event-store/model-event')
  * @constructor
  */
 function UserAvatarUpdatedEvent (aggregateId, data) {
-  ModelEvent.call(this, aggregateId, 'UserAvatarUpdatedEvent', data, Date.now())
+  ModelEvent.call(this, aggregateId, UserAvatarUpdatedEvent.name, data, Date.now())
 }
 util.inherits(UserAvatarUpdatedEvent, ModelEvent)
 
