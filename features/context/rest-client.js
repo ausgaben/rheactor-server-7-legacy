@@ -325,6 +325,12 @@ module.exports = {
       next()
     })
 
+    .then(/"([^"]+)" of the ([0-9]+)[a-z]+ item should equal ([+0-9,\.-]+)/, function (node, num, number, next) {
+      let context = this.ctx
+      expect(context.response.body.items[num - 1][node]).to.equal(+number)
+      next()
+    })
+
     .then('JWT $property should exist', function (property, next) {
       let context = this.ctx
       checkJwtProperty(context, property, function (value) {
