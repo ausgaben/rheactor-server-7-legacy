@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/RHeactor/server.git"
+    "url": "https://github.com/ResourcefulHumans/rheactor-server.git"
   },
   "author": "Resourceful Humans <info@resourceful-humans.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/RHeactor/server/issues"
+    "url": "https://github.com/ResourcefulHumans/rheactor-server/issues"
   },
-  "homepage": "https://github.com/RHeactor/server#readme",
+  "homepage": "https://github.com/ResourcefulHumans/rheactor-server#readme",
   "dependencies": {
     "aws-sdk": "^2.4.7",
     "bcrypt": "^0.8.7",
