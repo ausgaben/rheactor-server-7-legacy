@@ -39,3 +39,23 @@ Feature: SuperUsers
     When I GET {angelasJwt.sub}
     Then the status code should be 200
     And "superUser" should equal true
+
+  Scenario: SuperUsers can create other users and the users initial password is 12345678
+
+    Given "Bearer {angelasToken}" is the Authorization header
+    And this is the request body
+    --------------
+    "email": "heiko.fischer-{time}@example.com",
+    "firstname": "Heiko",
+    "lastname": "Fischer"
+    --------------
+    When I POST to {createUserEndpoint}
+    Then the status code should be 201
+    Given the Authorization header is empty
+    And this is the request body
+    --------------
+    "email": "heiko.fischer-{time}@example.com",
+    "password": "12345678"
+    --------------
+    When I POST to {loginEndpoint}
+    Then the status code should be 201

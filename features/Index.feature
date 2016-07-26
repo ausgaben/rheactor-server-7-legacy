@@ -18,3 +18,4 @@ Feature: /api
     And I store the link to "password-change" as "passwordChangeEndpoint"
     And I store the link to "password-change-confirm" as "passwordChangeConfirmEndpoint"
     And I store the link to "activate-account" as "accountActivationEndpoint"
+    And I store the link to "create-user" as "createUserEndpoint"

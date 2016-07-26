@@ -90,6 +90,12 @@ module.exports = {
       next()
     })
 
+    .given('the $header header is empty', function (name, next) {
+      let context = this.ctx
+      utils.header(context, name, undefined)
+      next()
+    })
+
     .given('this is the request body\n$json', function (json, next) {
       let context = this.ctx
       context.body = json
