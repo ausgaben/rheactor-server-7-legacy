@@ -14,6 +14,8 @@ const UserPasswordChangedEvent = require('../event/user/password-changed')
 const UserActivatedEvent = require('../event/user/activated')
 const UserDeactivatedEvent = require('../event/user/deactivated')
 const UserAvatarUpdatedEvent = require('../event/user/avatar-updated')
+const SuperUserPermissionsGrantedEvent = require('../event/user/super-user-permissions-granted')
+const SuperUserPermissionsRevokedEvent = require('../event/user/super-user-permissions-revoked')
 const URIValue = require('rheactor-value-objects/uri')
 
 const passwordRegex = /^\$2a\$\d+\$.+/
@@ -51,6 +53,7 @@ function UserModel (email, firstname, lastname, password, active, avatar) {
     this.isActive = active
     if (active) this.activatedAt = Date.now()
     this.avatar = avatar
+    this.superUser = false
   })
 }
 util.inherits(UserModel, AggregateRoot)
@@ -87,7 +90,7 @@ UserModel.prototype.setAvatar = function (avatar) {
 }
 
 /**
- * @return {UserDeactivatedEvent}
+ * @return {UserActivatedEvent}
  * @throws {ConflictError}
  */
 UserModel.prototype.activate = function () {
@@ -112,6 +115,32 @@ UserModel.prototype.deactivate = function () {
   this.isActive = false
   this.deactivatedAt = Date.now()
   return new UserDeactivatedEvent(self.aggregateId())
+}
+
+/**
+ * @return {SuperUserPermissionsRevokedEvent}
+ * @throws {ConflictError}
+ */
+UserModel.prototype.grantSuperUserPermissions = function () {
+  let self = this
+  if (this.superUser) {
+    throw new ConflictError('Already SuperUser!')
+  }
+  this.superUser = true
+  return new SuperUserPermissionsGrantedEvent(self.aggregateId())
+}
+
+/**
+ * @return {SuperUserPermissionsRevokedEvent}
+ * @throws {ConflictError}
+ */
+UserModel.prototype.revokeSuperUserPermissions = function () {
+  let self = this
+  if (!this.superUser) {
+    throw new ConflictError('Not SuperUser!')
+  }
+  this.superUser = false
+  return new SuperUserPermissionsRevokedEvent(self.aggregateId())
 }
 
 /**
@@ -188,6 +217,14 @@ UserModel.prototype.applyEvent = function (event) {
       break
     case UserAvatarUpdatedEvent.name:
       self.setAvatar(new URIValue(data.avatar))
+      self.updated(event.createdAt)
+      break
+    case SuperUserPermissionsGrantedEvent.name:
+      self.superUser = true
+      self.updated(event.createdAt)
+      break
+    case SuperUserPermissionsRevokedEvent.name:
+      self.superUser = false
       self.updated(event.createdAt)
       break
     default:

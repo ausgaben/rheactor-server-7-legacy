@@ -7,6 +7,7 @@ const tokens = require('../../util/tokens')
 const EmailValue = require('rheactor-value-objects/email')
 const utils = require('./util/storage')
 const DeactivateUserCommand = require('../../command/user/deactivate')
+const GrantSuperUserPermissionsCommand = require('../../command/user/grant-superuser-permissions')
 
 module.exports = {
   library: English.library(dictionary)
@@ -36,5 +37,11 @@ module.exports = {
       const e = new EmailValue(utils.template(email, utils.data(context)))
       return context.$app.repositories.user.getByEmail(e)
         .then(user => context.$app.emitter.emit(new DeactivateUserCommand(user)))
+    })
+    .given('the account for "$email" is granted superuser permissions', function (email) {
+      const context = this.ctx
+      const e = new EmailValue(utils.template(email, utils.data(context)))
+      return context.$app.repositories.user.getByEmail(e)
+        .then(user => context.$app.emitter.emit(new GrantSuperUserPermissionsCommand(user)))
     })
 }

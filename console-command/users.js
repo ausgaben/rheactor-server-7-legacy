@@ -10,6 +10,7 @@ module.exports = {
         console.log(
           '-',
           user.aggregateId(),
+          user.superUser ? colors.blue('^') : ' ',
           user.name(),
           user.email.toString(),
           user.isActive ? colors.green('[active]') : colors.red('[inactive]')
