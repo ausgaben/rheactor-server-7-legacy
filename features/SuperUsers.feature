@@ -59,3 +59,29 @@ Feature: SuperUsers
     --------------
     When I POST to {loginEndpoint}
     Then the status code should be 201
+
+  Scenario: Creating users is forbidden for others
+
+    Given "Bearer {janesToken}" is the Authorization header
+    And this is the request body
+    --------------
+    "email": "some.new.user-{time}@example.com",
+    "firstname": "Some",
+    "lastname": "User"
+    --------------
+    When I POST to {createUserEndpoint}
+    Then the status code should be 403
+
+  Scenario: SuperUsers can list all users
+
+    Given "Bearer {angelasToken}" is the Authorization header
+    When I POST to {userList}
+    Then the status code should be 200
+    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
+    And a list of "https://github.com/RHeactor/nucleus/wiki/JsonLD#User" with 8 of 8 items should be returned
+
+  Scenario: Listing all users is forbidden for others
+
+    Given "Bearer {janesToken}" is the Authorization header
+    When I POST to {userList}
+    Then the status code should be 403

@@ -19,3 +19,4 @@ Feature: /api
     And I store the link to "password-change-confirm" as "passwordChangeConfirmEndpoint"
     And I store the link to "activate-account" as "accountActivationEndpoint"
     And I store the link to "create-user" as "createUserEndpoint"
+    And I store the link to the list "https://github.com/RHeactor/nucleus/wiki/JsonLD#User" as "userList"

@@ -25,6 +25,7 @@ module.exports = function (apiHost) {
   jsonld.addLink('index', new URIValue(apiBase + '/activate-account'), User.$context, 'activate-account')
   jsonld.addLink('index', new URIValue(apiBase + '/avatar'), User.$context, 'avatar-upload')
   jsonld.addLink('index', new URIValue(apiBase + '/user'), User.$context, 'create-user')
+  jsonld.addLink('index', new URIValue(apiBase + '/search/user'), User.$context, 'list-users', true)
 
   jsonld.addLink(Token.$context, new URIValue(apiBase + '/token/verify'), Token.$context, 'token-verify')
   jsonld.addLink(Token.$context, new URIValue(apiBase + '/token/renew'), Token.$context, 'token-renew')

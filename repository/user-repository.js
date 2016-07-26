@@ -36,6 +36,22 @@ UserRepository.prototype.findByEmail = function (email) {
 }
 
 /**
+ * Find all users
+ *
+ * @param {Pagination} pagination
+ * @return {Promise.<Array.<UserModel>>}
+ */
+UserRepository.prototype.listAll = function (pagination) {
+  const self = this
+  return self.index.getAll('email')
+    .then(userIds => {
+      const total = userIds.length
+      return Promise.map(pagination.splice(userIds), userId => self.getById(userId))
+        .then(users => pagination.result(users, total))
+    })
+}
+
+/**
  * Get a user by email
  *
  * @param {EmailValue} email
