@@ -84,7 +84,7 @@ module.exports = (app, config, emitter, userRepo, tokenAuth, jsonld, sendHttpPro
       return verifySuperUser(req, userRepo).then(() => query)
         .then(query => userRepo.listAll(new Pagination(query.offset)))
         .then(paginatedResult => sendPaginatedListResponse(new URIValue(config.get('api_host')), req, res, User.$context, jsonld, user => transformer(user), paginatedResult))
-        .then(() => res.status(201).send())
+        .then(() => res.status(200).send())
     })
     .catch(sendHttpProblem.bind(null, res))
   )
