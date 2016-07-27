@@ -272,6 +272,7 @@ module.exports = {
     .then(/a list of "([^"]+)" with ([0-9]+) of ([0-9]+) items? should be returned/, function (itemContext, num, total, next) {
       let context = this.ctx
       let list = context.response.body
+      expect(context.response.statusCode).to.equal(200)
       expect(list.$context).to.equal('https://github.com/RHeactor/nucleus/wiki/JsonLD#List')
       expect(list.total).to.equal(+total)
       expect(list.items.length).to.equal(+num)
@@ -283,6 +284,7 @@ module.exports = {
 
     .then(/a list of "([^"]+)" should be returned/, function (itemContext, next) {
       let context = this.ctx
+      expect(context.response.statusCode).to.equal(200)
       let list = context.response.body
       expect(list.$context).to.equal('https://github.com/RHeactor/nucleus/wiki/JsonLD#List')
       _map(list.items, function (item) {
