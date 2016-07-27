@@ -184,6 +184,7 @@ module.exports = {
     .when('I follow the redirect', function (next) {
       let context = this.ctx
       let agent = client(context)
+      expect(context.response.header.location, 'Location header not present').to.not.equal(undefined)
       let request = context.request = agent.get(context.response.header.location.replace(testHost, ''))
       _forIn(utils.header(context), function (value, name) {
         request.set(name, value)

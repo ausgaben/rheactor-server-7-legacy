@@ -35,10 +35,11 @@ module.exports = (app, config, emitter, userRepo, tokenAuth, jsonld, sendHttpPro
   app.get('/api/user/:id', tokenAuth, (req, res) => Promise
     .try(() => {
       if (req.params.id !== req.user) {
-        throw new AccessDeniedError(req.url, 'This is not you.')
+        // Admins can fetch all users
+        return verifySuperUser(req, userRepo)
       }
-      return userRepo.getById(req.user)
     })
+    .then(() => userRepo.getById(req.params.id))
     .then(user => res.send(transformer(user)))
     .catch(sendHttpProblem.bind(null, res))
   )
@@ -60,7 +61,7 @@ module.exports = (app, config, emitter, userRepo, tokenAuth, jsonld, sendHttpPro
       return verifySuperUser(req, userRepo)
         .then(superUser => emitter.emit(new CreateUserCommand(new EmailValue(v.value.email), v.value.firstname, v.value.lastname, '$2a$04$9J9g5cfQKyf1bMCQZg7oGua.CjHe5lfOQs4jW5fwGN/Gm5zTxPqh2', true)))
     })
-    .then(() => res.status(201).send())
+    .then(event => res.header('Location', jsonld.createId(User.$context, event.aggregateId)).status(201).send())
     .catch(sendHttpProblem.bind(null, res))
   )
 

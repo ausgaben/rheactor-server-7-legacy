@@ -51,6 +51,13 @@ Feature: SuperUsers
     --------------
     When I POST to {createUserEndpoint}
     Then the status code should be 201
+    # Fetch the user
+    When I follow the redirect
+    Then the status code should be 200
+    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
+    And "$context" should equal "https://github.com/RHeactor/nucleus/wiki/JsonLD#User"
+    And "email" should equal "heiko.fischer-{time}@example.com"
+    # Try login as new user
     Given the Authorization header is empty
     And this is the request body
     --------------
