@@ -27,7 +27,7 @@ ModelTransformer.prototype.transform = function (jsonld, model) {
         email: model.email.toString(),
         avatar: model.avatar ? model.avatar.toString() : undefined,
         superUser: model.superUser,
-        active: model.active
+        active: model.isActive
       })
   }
 }

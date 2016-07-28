@@ -1,4 +1,4 @@
-@After=Login
+@After=User
 Feature: User deactivation
   As an admin
   I should be able to deactivate users

@@ -19,6 +19,7 @@ Feature: /api/user/:id
     And "name" should equal "Mike Doe"
     And "firstname" should equal "Mike"
     And "lastname" should equal "Doe"
+    And "active" should equal true
     And "password" should not exist
 
   Scenario: GET (account that is not me)
