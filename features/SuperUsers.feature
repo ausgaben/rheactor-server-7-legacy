@@ -87,12 +87,6 @@ Feature: SuperUsers
     And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
     And a list of "https://github.com/RHeactor/nucleus/wiki/JsonLD#User" with 8 of 8 items should be returned
 
-  Scenario: Listing all users is forbidden for others
-
-    Given "Bearer {janesToken}" is the Authorization header
-    When I POST to {userList}
-    Then the status code should be 403
-
   Scenario: SuperUsers can search users by email
 
     Given "Bearer {angelasToken}" is the Authorization header
@@ -107,3 +101,9 @@ Feature: SuperUsers
     And "firstname" of the 1st item should equal "Heiko"
     And "lastname" of the 1st item should equal "Fischer"
     And "email" of the 1st item should equal "heiko.fischer-{time}@example.com"
+
+  Scenario: Listing all users is forbidden for others
+
+    Given "Bearer {janesToken}" is the Authorization header
+    When I POST to {userList}
+    Then the status code should be 403

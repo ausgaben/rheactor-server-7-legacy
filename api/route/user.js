@@ -90,7 +90,7 @@ module.exports = (app, config, emitter, userRepo, tokenAuth, jsonld, sendHttpPro
           const pagination = new Pagination(query.offset)
           if (query.email) {
             return userRepo.findByEmail(new EmailValue(query.email))
-              .then(user => pagination.result([user], 1, query))
+              .then(user => pagination.result(user ? [user] : [], user ? 1 : 0, query))
           }
           return userRepo.listAll(pagination)
         })
