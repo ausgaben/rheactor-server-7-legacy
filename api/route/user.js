@@ -67,11 +67,14 @@ module.exports = (app, config, emitter, userRepo, tokenAuth, jsonld, sendHttpPro
 
   /**
    * Admins can list all users
+   *
+   * TODO: support search my (partial) name and email
    */
   app.post('/api/search/user', tokenAuth, (req, res) => Promise
     .try(() => {
       const schema = Joi.object().keys({
-        offset: Joi.number().min(0)
+        offset: Joi.number().min(0),
+        email: Joi.string().email()
       })
       const query = _merge(
         {},
@@ -83,7 +86,14 @@ module.exports = (app, config, emitter, userRepo, tokenAuth, jsonld, sendHttpPro
         throw new ValidationFailedError('Validation failed', query, v.error)
       }
       return verifySuperUser(req, userRepo).then(() => query)
-        .then(query => userRepo.listAll(new Pagination(query.offset)))
+        .then(query => {
+          const pagination = new Pagination(query.offset)
+          if (query.email) {
+            return userRepo.findByEmail(new EmailValue(query.email))
+              .then(user => pagination.result([user], 1, query))
+          }
+          return userRepo.listAll(pagination)
+        })
         .then(paginatedResult => sendPaginatedListResponse(new URIValue(config.get('api_host')), req, res, User.$context, jsonld, user => transformer(user), paginatedResult))
         .then(() => res.status(200).send())
     })
