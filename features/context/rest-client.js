@@ -113,9 +113,9 @@ module.exports = {
       doRequest(context, method, endpoint, next)
     })
 
-    .when('I GET $endpoint', function (endpoint, next) {
+    .when('I $method $endpoint', function (method, endpoint, next) {
       let context = this.ctx
-      doRequest(context, 'GET', endpoint, next)
+      doRequest(context, method, endpoint, next)
     })
 
     .when('I store "$node" as "$storage"', function (node, storage, next) {
