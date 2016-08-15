@@ -4,6 +4,7 @@ let _forIn = require('lodash/forIn')
 let _template = require('lodash/template')
 let _filter = require('lodash/filter')
 let _map = require('lodash/map')
+let _merge = require('lodash/merge')
 let expect = require('chai').expect
 let Yadda = require('yadda')
 let English = Yadda.localisation.English
@@ -58,9 +59,13 @@ function doRequest (context, method, endpoint, next) {
   })
 }
 
+const tokenContext = 'https://tools.ietf.org/html/rfc7519'
+let jwtTokenStore
+
 function checkJwtProperty (context, type, value, next) {
-  expect(context.response.body.$context).to.equal('https://tools.ietf.org/html/rfc7519')
-  jwt.verify(context.response.body.token, context.$app.config.get('public_key'), function (err, decoded) {
+  const token = utils.data(context, jwtTokenStore)
+  expect(token.$context).to.equal(tokenContext)
+  jwt.verify(token._token, context.$app.config.get('public_key'), function (err, decoded) {
     if (err) {
       next(err)
     }
@@ -368,6 +373,9 @@ module.exports = {
       if (type.charAt(0) === 'h') {
         m = 3600
       }
+      if (type.charAt(0) === 'd') {
+        m = 60 * 60 * 24
+      }
       let t = Math.floor(d.getTime() / 1000) + (dir === 'past' ? -1 : 1) * +num * m
       checkJwtProperty(context, property, function (value) {
         expect(value).to.be.within(t - 1, t + 1)
@@ -376,7 +384,28 @@ module.exports = {
 
     .then('I parse JWT token into "$name"', function (name, next) {
       let context = this.ctx
-      utils.data(context, name, JSON.parse(new Buffer(context.response.body.token.split('.')[1], 'base64').toString('binary')))
+      utils.data(context, name, _merge(
+        {
+          $context: context.response.body.$context,
+          _token: context.response.body.token
+        },
+        JSON.parse(new Buffer(context.response.body.token.split('.')[1], 'base64').toString('binary'))
+      ))
+      jwtTokenStore = name
+      next()
+    })
+
+    .given('I parse JWT token from "$storage" into "$name"', function (storage, name, next) {
+      const context = this.ctx
+      const value = utils.data(context, storage)
+      utils.data(context, name, _merge(
+        {
+          $context: tokenContext,
+          _token: value
+        },
+        JSON.parse(new Buffer(value.split('.')[1], 'base64').toString('binary')))
+      )
+      jwtTokenStore = name
       next()
     })
 

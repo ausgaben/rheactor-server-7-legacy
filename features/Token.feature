@@ -20,6 +20,7 @@ Feature: Tokens
     And "$context" should equal "https://tools.ietf.org/html/rfc7519"
     And "token" should exist
     And "token" should not equal "{token}"
+    And I parse JWT token into "jwt"
     And JWT sub should equal "{jwt.sub}"
     And JWT iss should equal "renew"
     And JWT exp should be 30 minutes in the future

@@ -9,6 +9,8 @@ Feature: User activation
   Scenario: Activate Mike's account
 
     Given I have the accountActivationToken for "mike.doe-{time}@example.com" in "activationToken"
+    And I parse JWT token from "activationToken" into "jwt"
+    Then JWT exp should be 30 days in the future
     And "Bearer {activationToken}" is the Authorization header
     When I POST to {accountActivationEndpoint}
     Then the status code should be 204

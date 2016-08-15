@@ -15,7 +15,7 @@ module.exports = {
       let context = this.ctx
       context.$app.repositories.user.getByEmail(new EmailValue(utils.template(email, utils.data(context))))
         .then((user) => {
-          let lifetime = context.$app.config.get('token_lifetime')
+          let lifetime = context.$app.config.get('activation_token_lifetime')
           if (/^expired/.test(token)) {
             token = token.replace(/^expired/, '')
             lifetime = -1
