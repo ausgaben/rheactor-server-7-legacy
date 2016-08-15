@@ -21,6 +21,7 @@ nconf.defaults({
   'app': process.env.npm_package_name,
   'root': path.normalize(path.join(__dirname, '/../..')),
   'token_lifetime': 1800,
+  'activation_token_lifetime': 1800,
   'redis': {
     'host': '127.0.0.1',
     'port': 6379,

@@ -21,7 +21,7 @@ module.exports = (templateMailerClient, config) => {
        */
       (cmd) => {
         let mailerConfig = config.get('template_mailer')
-        return tokens.accountActivationToken(config.get('api_host'), config.get('private_key'), config.get('token_lifetime'), cmd.user)
+        return tokens.accountActivationToken(config.get('api_host'), config.get('private_key'), config.get('activation_token_lifetime'), cmd.user)
           .then((token) => {
             return templateMailerClient
               .send(mailerConfig['smtp_config'], mailerConfig['template_prefix'] + mailerConfig['email_verification_template'], cmd.email.toString(), cmd.user.name(), {
