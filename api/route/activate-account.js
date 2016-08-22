@@ -28,7 +28,7 @@ module.exports = function (app, config, emitter, userRepository, tokenAuth, send
         return userRepository.getById(req.user)
           .then((user) => {
             checkVersion(req.authInfo.payload['$aggregateMeta'][user.constructor.name].version, user)
-            return emitter.emit(new ActivateUserCommand(user))
+            return emitter.emit(new ActivateUserCommand(user, user))
           })
       })
       .then(() => {

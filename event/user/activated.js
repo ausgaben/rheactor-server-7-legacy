@@ -4,11 +4,11 @@ const util = require('util')
 const ModelEvent = require('rheactor-event-store/model-event')
 
 /**
- * @param {String} aggregateId
+ * @param {ModelEvent} modelEvent
  * @constructor
  */
-function UserActivatedEvent (aggregateId) {
-  ModelEvent.call(this, aggregateId, UserActivatedEvent.name, {}, Date.now())
+function UserActivatedEvent (modelEvent) {
+  ModelEvent.call(this, modelEvent.aggregateId, this.constructor.name, modelEvent.data, modelEvent.createdAt, modelEvent.createdBy)
 }
 util.inherits(UserActivatedEvent, ModelEvent)
 

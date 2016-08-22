@@ -1,6 +1,7 @@
 'use strict'
 
 const AggregateRepository = require('rheactor-event-store/aggregate-repository')
+const ModelEvent = require('rheactor-event-store/model-event')
 const AggregateIndex = require('rheactor-event-store/aggregate-index')
 const util = require('util')
 const UserModel = require('../model/user')
@@ -104,6 +105,26 @@ UserRepository.prototype.add = function (user) {
               return event
             })
         })
+    })
+}
+
+/**
+ * Persist a user event
+ *
+ * @param {ModelEvent} modelEvent
+ * @param {UserModel} author
+ */
+UserRepository.prototype.persistEvent = function (modelEvent, author) {
+  const self = this
+  if (!author) {
+    return AggregateRepository.prototype.persistEvent.call(self, modelEvent)
+  }
+  let event = new ModelEvent(modelEvent.aggregateId, modelEvent.name, modelEvent.data, modelEvent.createdAt, author.aggregateId())
+  return AggregateRepository.prototype.persistEvent.call(self, event)
+    .then(() => {
+      let eventWithAuthor = Object.create(modelEvent.constructor.prototype)
+      modelEvent.constructor.call(eventWithAuthor, event)
+      return eventWithAuthor
     })
 }
 

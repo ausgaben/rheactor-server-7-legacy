@@ -30,5 +30,7 @@ module.exports = function (apiHost) {
   jsonld.addLink(Token.$context, new URIValue(apiBase + '/token/verify'), Token.$context, 'token-verify')
   jsonld.addLink(Token.$context, new URIValue(apiBase + '/token/renew'), Token.$context, 'token-renew')
 
+  jsonld.addLink(User.$context, new URIValue(apiBase + '/user/:id/active'), User.$context, 'toggle-active')
+
   return jsonld
 }

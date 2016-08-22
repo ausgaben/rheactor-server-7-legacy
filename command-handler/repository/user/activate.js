@@ -11,9 +11,6 @@ module.exports = {
    */
   handler: (repository, cmd) => {
     let event = cmd.user.activate()
-    return repository.eventStore.persist(event)
-      .then(() => {
-        return event
-      })
+    return repository.persistEvent(event, cmd.author)
   }
 }

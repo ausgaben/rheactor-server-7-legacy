@@ -40,7 +40,7 @@ Feature: SuperUsers
     Then the status code should be 200
     And "superUser" should equal true
 
-  Scenario: SuperUsers can create other users and the users initial password is 12345678
+  Scenario: can create other users and the users initial password is 12345678
 
     Given "Bearer {angelasToken}" is the Authorization header
     And this is the request body
@@ -79,7 +79,7 @@ Feature: SuperUsers
     When I POST to {createUserEndpoint}
     Then the status code should be 403
 
-  Scenario: SuperUsers can list all users
+  Scenario: can list all users
 
     Given "Bearer {angelasToken}" is the Authorization header
     When I POST to {userList}
@@ -87,7 +87,7 @@ Feature: SuperUsers
     And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
     And a list of "https://github.com/RHeactor/nucleus/wiki/JsonLD#User" with 8 of 8 items should be returned
 
-  Scenario: SuperUsers can search users by email
+  Scenario: can search users by email
 
     Given "Bearer {angelasToken}" is the Authorization header
     And this is the request body
@@ -106,4 +106,57 @@ Feature: SuperUsers
 
     Given "Bearer {janesToken}" is the Authorization header
     When I POST to {userList}
+    Then the status code should be 403
+
+  Scenario: can activate and deactivate users
+
+    # A new user registers
+    Given the Authorization header is empty
+    And this is the request body
+    --------------
+    "email": "superuser.activation-test-{time}@example.com",
+    "firstname": "Mike",
+    "lastname": "Doe",
+    "password": "i will change this later"
+    --------------
+    When I POST to {registrationEndpoint}
+    Then the status code should be 201
+    # Admin searches the user by email
+    Given "Bearer {angelasToken}" is the Authorization header
+    And this is the request body
+    --------------
+    "email": "superuser.activation-test-{time}@example.com"
+    --------------
+    When I POST to {userList}
+    Then the status code should be 200
+    And I store the link to "toggle-active" of the 1st item as "activateUserEndpoint"
+    # Activate the user
+    Given "1" is the If-Match header
+    When I PUT to {activateUserEndpoint}
+    Then the status code should be 204
+    And the etag header should equal "2"
+    And the Last-Modified header should be now
+    # Now the user can log-in
+    Given the Authorization header is empty
+    And this is the request body
+    --------------
+    "email": "superuser.activation-test-{time}@example.com",
+    "password": "i will change this later"
+    --------------
+    When I POST to {loginEndpoint}
+    Then the status code should be 201
+    # Deactivate the user
+    Given "Bearer {angelasToken}" is the Authorization header
+    And "2" is the If-Match header
+    And the request body is empty
+    When I DELETE {activateUserEndpoint}
+    Then the status code should be 204
+    # Now the user can't log-in
+    Given the Authorization header is empty
+    And this is the request body
+    --------------
+    "email": "superuser.activation-test-{time}@example.com",
+    "password": "i will change this later"
+    --------------
+    When I POST to {loginEndpoint}
     Then the status code should be 403

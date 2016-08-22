@@ -74,6 +74,7 @@ UserModel.prototype.setPassword = function (password) {
       throw new ValidationFailedError('UserModel.password validation failed', data, err)
     }
     this.password = data.password
+    this.updated()
     return new UserPasswordChangedEvent(self.aggregateId(), {password: data.password})
   })
 }
@@ -85,6 +86,7 @@ UserModel.prototype.setAvatar = function (avatar) {
       throw new ValidationFailedError('ContributionModel.setAvatar validation failed', priority, err)
     }
     self.avatar = avatar
+    this.updated()
     return new UserAvatarUpdatedEvent(self.aggregateId(), {avatar: avatar.toString()})
   })
 }
@@ -100,7 +102,8 @@ UserModel.prototype.activate = function () {
   }
   this.isActive = true
   this.activatedAt = Date.now()
-  return new UserActivatedEvent(self.aggregateId())
+  this.updated()
+  return new UserActivatedEvent({aggregateId: self.aggregateId()})
 }
 
 /**
@@ -114,7 +117,8 @@ UserModel.prototype.deactivate = function () {
   }
   this.isActive = false
   this.deactivatedAt = Date.now()
-  return new UserDeactivatedEvent(self.aggregateId())
+  this.updated()
+  return new UserDeactivatedEvent({aggregateId: self.aggregateId()})
 }
 
 /**
@@ -127,6 +131,7 @@ UserModel.prototype.grantSuperUserPermissions = function () {
     throw new ConflictError('Already SuperUser!')
   }
   this.superUser = true
+  this.updated()
   return new SuperUserPermissionsGrantedEvent(self.aggregateId())
 }
 
@@ -140,6 +145,7 @@ UserModel.prototype.revokeSuperUserPermissions = function () {
     throw new ConflictError('Not SuperUser!')
   }
   this.superUser = false
+  this.updated()
   return new SuperUserPermissionsRevokedEvent(self.aggregateId())
 }
 

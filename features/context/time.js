@@ -42,4 +42,14 @@ module.exports = {
       }
       next()
     })
+    .then('"$node" should be now', function (node, next) {
+      const context = this.ctx
+      expect(Math.round(moment.duration(+context.response.body[node] - Date.now()).asSeconds())).to.equal(0)
+      next()
+    })
+    .then('the $header header should be now', function (header, next) {
+      const context = this.ctx
+      expect(Math.round(moment.duration(+context.response.header[header.toLowerCase()] - Date.now()).asSeconds())).to.equal(0)
+      next()
+    })
 }
