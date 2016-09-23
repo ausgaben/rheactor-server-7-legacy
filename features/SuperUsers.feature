@@ -201,3 +201,26 @@ Feature: SuperUsers
     When I POST to {userList}
     Then the status code should be 200
     And "email" of the 1st item should equal "superuser.changed.email-change-test-{time}@example.com"
+
+  Scenario: When chaning the email of a user, new email address must not exist
+
+    # Admin searches the user by email
+    Given "Bearer {angelasToken}" is the Authorization header
+    And this is the request body
+    --------------
+    "email": "superuser.changed.email-change-test-{time}@example.com"
+    --------------
+    When I POST to {userList}
+    Then the status code should be 200
+    And I store the link to "update-email" of the 1st item as "changeUserEmailEndpoint"
+    # Change its email to an existing
+    Given "3" is the If-Match header
+    And this is the request body
+    --------------
+    "email": "superuser.activation-test-{time}@example.com"
+    --------------
+    When I PUT to {changeUserEmailEndpoint}
+    Then the status code should be 409
+    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
+    And "$context" should equal "https://www.ietf.org/id/draft-ietf-appsawg-http-problem-01.txt"
+    And "detail" should equal "Email address already in use: superuser.activation-test-{time}@example.com"

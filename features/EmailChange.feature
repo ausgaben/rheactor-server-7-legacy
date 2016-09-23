@@ -1,9 +1,7 @@
 @After=User
-Feature: Profile
+Feature: Email change
   As a user
-  I should be able to edit my profile's
-  email address,
-  firstname and lastname
+  I should be able to edit my profile's email address
 
   Background: Client defaults
 
@@ -37,3 +35,21 @@ Feature: Profile
     When I GET {jwt.sub}
     Then the status code should be 200
     And "email" should equal "mike.w.doe-{time}@example.com"
+
+  Scenario: When changing  email addresses, the email must not exist
+
+    Given "Bearer {token}" is the Authorization header
+    When I GET {jwt.sub}
+    Then the status code should be 200
+    And I store the link to "change-email" as "emailChangeEndpoint"
+    And I store the link to "change-email-confirm" as "emailChangeConfirmEndpoint"
+    # Request a token to change the email
+    Given this is the request body
+    --------------
+    "email": "jane.doe-{time}@example.com"
+    --------------
+    When I POST to {emailChangeEndpoint}
+    Then the status code should be 409
+    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
+    And "$context" should equal "https://www.ietf.org/id/draft-ietf-appsawg-http-problem-01.txt"
+    And "detail" should equal "Email address already in use: jane.doe-{time}@example.com"

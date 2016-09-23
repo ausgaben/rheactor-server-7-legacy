@@ -1,6 +1,7 @@
 'use strict'
 
-let ChangeUserEmailCommand = require('../../../command/user/email-change')
+const ChangeUserEmailCommand = require('../../../command/user/email-change')
+const ConflictError = require('rheactor-value-objects/errors/conflict')
 
 module.exports = {
   command: ChangeUserEmailCommand,
@@ -9,8 +10,10 @@ module.exports = {
    * @param {ChangeUserEmailCommand} cmd
    * @return {UserEmailChangedEvent}
    */
-  handler: (repository, cmd) => {
-    let event = cmd.user.setEmail(cmd.email)
-    return repository.persistEvent(event, cmd.author)
-  }
+  handler: (repository, cmd) => repository.findByEmail(cmd.email)
+    .then(existingUser => {
+      if (existingUser) throw new ConflictError('Email address already in use: ' + cmd.email.toString())
+      let event = cmd.user.setEmail(cmd.email)
+      return repository.persistEvent(event, cmd.author)
+    })
 }

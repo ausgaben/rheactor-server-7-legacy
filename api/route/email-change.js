@@ -6,6 +6,7 @@ const SendUserEmailChangeConfirmationLinkCommand = require('../../command/user/s
 const ChangeUserEmailCommand = require('../../command/user/email-change')
 const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
 const AccessDeniedError = require('rheactor-value-objects/errors/access-denied')
+const ConflictError = require('rheactor-value-objects/errors/conflict')
 const Joi = require('joi')
 const checkVersion = require('../check-version')
 const _merge = require('lodash/merge')
@@ -46,8 +47,12 @@ module.exports = function (app, config, emitter, userRepository, tokenAuth, send
       if (v.error) {
         throw new ValidationFailedError('Validation failed', query, v.error)
       }
-      return userRepository.getById(req.user)
-        .then(user => emitter.emit(new SendUserEmailChangeConfirmationLinkCommand(user, new EmailValue(v.value.email))))
+      return userRepository.findByEmail(new EmailValue(v.value.email))
+        .then(existingUser => {
+          if (existingUser) throw new ConflictError('Email address already in use: ' + v.value.email)
+          return userRepository.getById(req.user)
+        })
+        .then(user => emitter.emit(new SendUserEmailChangeConfirmationLinkCommand(user, new EmailValue(v.value.email)), user))
     })
     .then(() => res.status(201).send())
     .catch(err => sendHttpProblem(res, err))
@@ -87,8 +92,12 @@ module.exports = function (app, config, emitter, userRepository, tokenAuth, send
       if (v.error) {
         throw new ValidationFailedError('Validation failed', query, v.error)
       }
-      checkVersion(req.headers['if-match'], user)
-      return emitter.emit(new ChangeUserEmailCommand(user, new EmailValue(v.value.email)))
+      return userRepository.findByEmail(new EmailValue(v.value.email))
+        .then(existingUser => {
+          if (existingUser) throw new ConflictError('Email address already in use: ' + v.value.email)
+          checkVersion(req.headers['if-match'], user)
+          return emitter.emit(new ChangeUserEmailCommand(user, new EmailValue(v.value.email), superUser))
+        })
         .then(event => res
           .header('etag', user.aggregateVersion())
           .header('last-modified', new Date(event.createdAt).toUTCString())
