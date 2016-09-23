@@ -43,6 +43,7 @@ module.exports = (app, config, repositories, emitter, transformer, jsonld) => {
   require('../../api/route/token')(app, config, tokenAuth, jsonld, base.sendHttpProblem)
   require('../../api/route/login')(app, config, repositories.user, jsonld, base.sendHttpProblem)
   require('../../api/route/password-change')(app, config, emitter, repositories.user, tokenAuth, base.sendHttpProblem)
+  require('../../api/route/email-change')(app, config, emitter, repositories.user, tokenAuth, base.sendHttpProblem)
   require('../../api/route/activate-account')(app, config, emitter, repositories.user, tokenAuth, base.sendHttpProblem)
   require('../../api/route/user')(app, config, emitter, repositories.user, tokenAuth, jsonld, base.sendHttpProblem, transformer.bind(null, jsonld))
   require('../../api/route/avatar')(app, config, emitter, repositories.user, tokenAuth, jsonld, base.sendHttpProblem)

@@ -11,6 +11,7 @@ const ConflictError = require('rheactor-value-objects/errors/conflict')
 const UnhandledDomainEventError = require('rheactor-value-objects/errors/unhandled-domain-event')
 const UserCreatedEvent = require('../event/user/created')
 const UserPasswordChangedEvent = require('../event/user/password-changed')
+const UserEmailChangedEvent = require('../event/user/email-changed')
 const UserActivatedEvent = require('../event/user/activated')
 const UserDeactivatedEvent = require('../event/user/deactivated')
 const UserAvatarUpdatedEvent = require('../event/user/avatar-updated')
@@ -150,6 +151,22 @@ UserModel.prototype.revokeSuperUserPermissions = function () {
 }
 
 /**
+ * @patam {EmailValue} email
+ * @return {UserEmailChangedEvent}
+ * @throws {ConflictError}
+ */
+UserModel.prototype.setEmail = function (email) {
+  const self = this
+  const v = Joi.validate(email, Joi.object().type(EmailValue).required())
+  if (v.error) {
+    throw new ValidationFailedError('Not an email', email, v.error)
+  }
+  this.email = email.toString()
+  this.updated()
+  return new UserEmailChangedEvent(self.aggregateId(), {email: email.toString()})
+}
+
+/**
  * @returns {string}
  */
 UserModel.prototype.name = function () {
@@ -209,6 +226,10 @@ UserModel.prototype.applyEvent = function (event) {
       break
     case UserPasswordChangedEvent.name:
       self.setPassword(data.password)
+      self.updated(event.createdAt)
+      break
+    case UserEmailChangedEvent.name:
+      self.setEmail(new EmailValue(data.email))
       self.updated(event.createdAt)
       break
     case UserActivatedEvent.name:

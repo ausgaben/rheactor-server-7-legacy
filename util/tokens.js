@@ -1,29 +1,29 @@
 'use strict'
 
-let Promise = require('bluebird')
-let jwt = require('jsonwebtoken')
-let JsonWebToken = require('rheactor-web-app/js/model/jsonwebtoken')
-let JSONLD = require('../config/jsonld')
-let User = require('rheactor-web-app/js/model/user')
+const Promise = require('bluebird')
+const jwt = require('jsonwebtoken')
+const JsonWebToken = require('rheactor-web-app/js/model/jsonwebtoken')
+const JSONLD = require('../config/jsonld')
+const User = require('rheactor-web-app/js/model/user')
 
 /**
- *
  * @param {String} iss
  * @param {String} apiHost
  * @param {String} privateKey
  * @param {Number} tokenLifetime
  * @param {UserModel} user
+ * @param {Object} payload
  * @returns {Promise.<JsonWebToken>}
  */
-let sign = (iss, apiHost, privateKey, tokenLifetime, user) => {
+const sign = (iss, apiHost, privateKey, tokenLifetime, user, payload) => {
   let jsonld = JSONLD(apiHost)
   let aggregateMeta = {}
   aggregateMeta[user.constructor.name] = user.$aggregateMeta
+  payload = payload || {}
+  payload.$aggregateMeta = aggregateMeta
   return Promise.try(() => {
     let token = jwt.sign(
-      {
-        $aggregateMeta: aggregateMeta
-      },
+      payload,
       privateKey,
       {
         algorithm: 'RS256',
@@ -49,9 +49,7 @@ module.exports = {
    * {JsonWebToken} token
    * @returns {boolean}
    */
-  isLostPasswordToken: (token) => {
-    return token.iss === 'password-change'
-  },
+  isLostPasswordToken: (token) => token.iss === 'password-change',
 
   /**
    * @param {String} apiHost
@@ -66,9 +64,23 @@ module.exports = {
    * {JsonWebToken} token
    * @returns {boolean}
    */
-  isAccountActivationToken: (token) => {
-    return token.iss === 'account-activation'
-  },
+  isAccountActivationToken: (token) => token.iss === 'account-activation',
+
+  /**
+   * @param {String} apiHost
+   * @param {String} privateKey
+   * @param {Number} tokenLifetime
+   * @param {UserModel} user
+   * @param {EmailValue} email
+   * @returns {Promise.<JsonWebToken>}
+   */
+  changeEmailToken: sign.bind(null, 'email-change'),
+
+  /**
+   * {JsonWebToken} token
+   * @returns {boolean}
+   */
+  isChangeEmailToken: (token) => token.iss === 'email-change',
 
   /**
    * @param {String} apiHost

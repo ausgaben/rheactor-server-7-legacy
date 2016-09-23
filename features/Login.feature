@@ -30,10 +30,10 @@ Feature: Login
   Scenario: Login as Jane
 
     Given this is the request body
-  --------------
-  "email": "jane.doe-{time}@example.com",
-  "password": "leg selection railroad wrapped"
-  --------------
+    --------------
+    "email": "jane.doe-{time}@example.com",
+    "password": "leg selection railroad wrapped"
+    --------------
     When I POST to {loginEndpoint}
     Then the status code should be 201
     And I store "token" as "janesToken"
@@ -54,10 +54,10 @@ Feature: Login
   Scenario: Login with invalid password should not work
 
     Given this is the request body
-  --------------
-  "email": "mike.doe-{time}@example.com",
-  "password": "this is not my password"
-  --------------
+    --------------
+    "email": "mike.doe-{time}@example.com",
+    "password": "this is not my password"
+    --------------
     When I POST to {loginEndpoint}
     Then the status code should be 403
 

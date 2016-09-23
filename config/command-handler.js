@@ -27,4 +27,5 @@ module.exports = (repos, emitter, config, templateMailerClient) => {
 
   require('../command-handler/user-confirm-email-handler')(templateMailerClient, config)(c)
   require('../command-handler/user-send-password-change-confirmation-link-handler')(templateMailerClient, config)(c)
+  require('../command-handler/user-send-email-change-confirmation-link-handler')(templateMailerClient, config)(c)
 }
