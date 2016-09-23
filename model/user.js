@@ -161,9 +161,10 @@ UserModel.prototype.setEmail = function (email) {
   if (v.error) {
     throw new ValidationFailedError('Not an email', email, v.error)
   }
+  const oldemail = this.email ? this.email.toString() : undefined
   this.email = email.toString()
   this.updated()
-  return new UserEmailChangedEvent(self.aggregateId(), {email: email.toString()})
+  return new UserEmailChangedEvent(self.aggregateId(), {email: email.toString(), oldemail})
 }
 
 /**

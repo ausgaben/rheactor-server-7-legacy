@@ -8,6 +8,7 @@ const UserModel = require('../model/user')
 const EntryNotFoundError = require('rheactor-value-objects/errors/entry-not-found')
 const Promise = require('bluebird')
 const UserCreatedEvent = require('../event/user/created')
+const UserEmailChangedEvent = require('../event/user/email-changed')
 
 /**
  * Creates a new user repository
@@ -118,14 +119,34 @@ UserRepository.prototype.persistEvent = function (modelEvent, author) {
   const self = this
   if (!author) {
     return AggregateRepository.prototype.persistEvent.call(self, modelEvent)
+      .then(() => self.postPersist(modelEvent))
   }
   let event = new ModelEvent(modelEvent.aggregateId, modelEvent.name, modelEvent.data, modelEvent.createdAt, author.aggregateId())
   return AggregateRepository.prototype.persistEvent.call(self, event)
+    .then(() => self.postPersist(event))
     .then(() => {
       let eventWithAuthor = Object.create(modelEvent.constructor.prototype)
       modelEvent.constructor.call(eventWithAuthor, event)
       return eventWithAuthor
     })
+}
+
+/**
+ * Persist a user event
+ *
+ * @param {ModelEvent} modelEvent
+ */
+UserRepository.prototype.postPersist = function (modelEvent) {
+  const self = this
+  if (modelEvent.name === UserEmailChangedEvent.name) {
+    return Promise
+      .join(
+        self.index.remove('email', modelEvent.data.oldemail, modelEvent.aggregateId),
+        self.index.add('email', modelEvent.data.email, modelEvent.aggregateId)
+      )
+      .then(() => modelEvent)
+  }
+  return Promise.resolve(modelEvent)
 }
 
 module.exports = UserRepository

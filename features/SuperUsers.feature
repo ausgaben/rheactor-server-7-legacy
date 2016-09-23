@@ -160,3 +160,44 @@ Feature: SuperUsers
     --------------
     When I POST to {loginEndpoint}
     Then the status code should be 403
+
+  Scenario: can change the email address of users
+
+    Given the Authorization header is empty
+    And this is the request body
+    --------------
+    "email": "superuser.email-change-test-{time}@example.com",
+    "firstname": "Mike",
+    "lastname": "Doe",
+    "password": "some password"
+    --------------
+    When I POST to {registrationEndpoint}
+    Then the status code should be 201
+    # Admin searches the user by email
+    Given "Bearer {angelasToken}" is the Authorization header
+    And this is the request body
+    --------------
+    "email": "superuser.email-change-test-{time}@example.com"
+    --------------
+    When I POST to {userList}
+    Then the status code should be 200
+    And I store the link to "update-email" of the 1st item as "changeUserEmailEndpoint"
+    # Change its email
+    Given "1" is the If-Match header
+    And this is the request body
+    --------------
+    "email": "superuser.changed.email-change-test-{time}@example.com"
+    --------------
+    When I PUT to {changeUserEmailEndpoint}
+    Then the status code should be 204
+    And the etag header should equal "2"
+    And the Last-Modified header should be now
+    # Search for the changed user
+    Given "Bearer {angelasToken}" is the Authorization header
+    And this is the request body
+    --------------
+    "email": "superuser.changed.email-change-test-{time}@example.com"
+    --------------
+    When I POST to {userList}
+    Then the status code should be 200
+    And "email" of the 1st item should equal "superuser.changed.email-change-test-{time}@example.com"

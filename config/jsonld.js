@@ -31,6 +31,7 @@ module.exports = function (apiHost) {
   jsonld.addLink(Token.$context, new URIValue(apiBase + '/token/renew'), Token.$context, 'token-renew')
 
   jsonld.addLink(User.$context, new URIValue(apiBase + '/user/:id/active'), User.$context, 'toggle-active')
+  jsonld.addLink(User.$context, new URIValue(apiBase + '/user/:id/email'), User.$context, 'update-email')
   jsonld.addLink(User.$context, new URIValue(apiBase + '/user/:id/email-change'), User.$context, 'change-email')
   jsonld.addLink(User.$context, new URIValue(apiBase + '/user/:id/email-change/confirm'), User.$context, 'change-email-confirm')
 

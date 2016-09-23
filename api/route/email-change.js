@@ -11,6 +11,12 @@ const checkVersion = require('../check-version')
 const _merge = require('lodash/merge')
 const tokens = require('../../util/tokens')
 
+const verifySuperUser = (req, userRepo) => userRepo.getById(req.user)
+  .then(admin => {
+    if (!admin.superUser) throw new AccessDeniedError(req.url, 'SuperUser privileges required.')
+    return admin
+  })
+
 /**
  * Manages email change requests.
  *
@@ -56,11 +62,40 @@ module.exports = function (app, config, emitter, userRepository, tokenAuth, send
     .then(user => {
       checkVersion(req.authInfo.payload['$aggregateMeta'][user.constructor.name].version, user)
       return emitter.emit(new ChangeUserEmailCommand(user, new EmailValue(req.authInfo.payload.email)))
+        .then(event => res
+          .header('etag', user.aggregateVersion())
+          .header('last-modified', new Date(event.createdAt).toUTCString())
+          .status(204).send())
     })
-    .then(event => res
-      .header('etag', event.aggregateVersion)
-      .header('last-modified', new Date(event.createdAt).toUTCString())
-      .status(204).send())
+    .catch(err => sendHttpProblem(res, err))
+  )
+
+  /**
+   * Admins can change emails of users
+   */
+  app.put('/api/user/:id/email', tokenAuth, (req, res) => Promise
+    .join(
+      verifySuperUser(req, userRepository),
+      userRepository.getById(req.params.id)
+    )
+    .spread((superUser, user) => {
+      const schema = Joi.object().keys({
+        email: Joi.string().required().email()
+      })
+      const query = _merge({}, req.body)
+      const v = Joi.validate(req.body, schema)
+      if (v.error) {
+        throw new ValidationFailedError('Validation failed', query, v.error)
+      }
+      checkVersion(req.headers['if-match'], user)
+      return emitter.emit(new ChangeUserEmailCommand(user, new EmailValue(v.value.email)))
+        .then(event => res
+          .header('etag', user.aggregateVersion())
+          .header('last-modified', new Date(event.createdAt).toUTCString())
+          .status(204)
+          .send()
+        )
+    })
     .catch(err => sendHttpProblem(res, err))
   )
 }
