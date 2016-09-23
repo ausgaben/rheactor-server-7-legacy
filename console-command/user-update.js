@@ -1,10 +1,12 @@
 'use strict'
 
 const UpdateUserAvatarCommand = require('../command/user/update-avatar')
+const ChangeUserEmailCommand = require('../command/user/email-change')
 const DeactivateUserCommand = require('../command/user/deactivate')
 const GrantSuperUserPermissionCommand = require('../command/user/grant-superuser-permissions')
 const RevokeSuperUserPermissionCommand = require('../command/user/revoke-superuser-permissions')
 const URIValue = require('rheactor-value-objects/uri')
+const EmailValue = require('rheactor-value-objects/email')
 const Promise = require('bluebird')
 
 module.exports = {
@@ -12,6 +14,7 @@ module.exports = {
   description: 'Update user properties',
   options: [
     ['-a, --avatar <url>', 'Set the avatar'],
+    ['-e, --email <email>', 'Set the email'],
     ['-d, --deactivate', 'Deactivated the user'],
     ['-s, --superuser', 'Grant superUser permissions'],
     ['-n, --nosuperuser', 'Remove superUser permissions']
@@ -22,6 +25,9 @@ module.exports = {
         const p = []
         if (options.avatar) {
           p.push(backend.emitter.emit(new UpdateUserAvatarCommand(user, new URIValue(options.avatar))))
+        }
+        if (options.email) {
+          p.push(backend.emitter.emit(new ChangeUserEmailCommand(user, new EmailValue(options.email))))
         }
         if (options.deactivate) {
           p.push(backend.emitter.emit(new DeactivateUserCommand(user)))
