@@ -3,6 +3,7 @@
 const UpdateUserAvatarCommand = require('../command/user/update-avatar')
 const ChangeUserEmailCommand = require('../command/user/email-change')
 const DeactivateUserCommand = require('../command/user/deactivate')
+const ActivateUserCommand = require('../command/user/activate')
 const GrantSuperUserPermissionCommand = require('../command/user/grant-superuser-permissions')
 const RevokeSuperUserPermissionCommand = require('../command/user/revoke-superuser-permissions')
 const URIValue = require('rheactor-value-objects/uri')
@@ -15,7 +16,8 @@ module.exports = {
   options: [
     ['-a, --avatar <url>', 'Set the avatar'],
     ['-e, --email <email>', 'Set the email'],
-    ['-d, --deactivate', 'Deactivated the user'],
+    ['-d, --deactivate', 'Deactivate the user'],
+    ['-a, --activate', 'Activate the user'],
     ['-s, --superuser', 'Grant superUser permissions'],
     ['-n, --nosuperuser', 'Remove superUser permissions']
   ],
@@ -31,6 +33,9 @@ module.exports = {
         }
         if (options.deactivate) {
           p.push(backend.emitter.emit(new DeactivateUserCommand(user)))
+        }
+        if (options.activate) {
+          p.push(backend.emitter.emit(new ActivateUserCommand(user)))
         }
         if (options.superuser) {
           p.push(backend.emitter.emit(new GrantSuperUserPermissionCommand(user)))
