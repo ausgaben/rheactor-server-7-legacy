@@ -17,7 +17,7 @@ module.exports = {
     ['-a, --avatar <url>', 'Set the avatar'],
     ['-e, --email <email>', 'Set the email'],
     ['-d, --deactivate', 'Deactivate the user'],
-    ['-a, --activate', 'Activate the user'],
+    ['-A, --activate', 'Activate the user'],
     ['-s, --superuser', 'Grant superUser permissions'],
     ['-n, --nosuperuser', 'Remove superUser permissions']
   ],
