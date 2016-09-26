@@ -193,7 +193,7 @@ Feature: SuperUsers
     Given "1" is the If-Match header
     And this is the request body
     --------------
-    "email": "superuser.changed.email-change-test-{time}@example.com"
+    "value": "superuser.changed.email-change-test-{time}@example.com"
     --------------
     When I PUT to {changeUserEmailEndpoint}
     Then the status code should be 204
@@ -224,7 +224,7 @@ Feature: SuperUsers
     Given "3" is the If-Match header
     And this is the request body
     --------------
-    "email": "superuser.activation-test-{time}@example.com"
+    "value": "superuser.activation-test-{time}@example.com"
     --------------
     When I PUT to {changeUserEmailEndpoint}
     Then the status code should be 409

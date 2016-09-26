@@ -18,7 +18,7 @@ Feature: Email change
     # Request a token to change the email
     Given this is the request body
     --------------
-    "email": "mike.w.doe-{time}@example.com"
+    "value": "mike.w.doe-{time}@example.com"
     --------------
     When I POST to {emailChangeEndpoint}
     Then the status code should be 201
@@ -46,7 +46,7 @@ Feature: Email change
     # Request a token to change the email
     Given this is the request body
     --------------
-    "email": "jane.doe-{time}@example.com"
+    "value": "jane.doe-{time}@example.com"
     --------------
     When I POST to {emailChangeEndpoint}
     Then the status code should be 409
