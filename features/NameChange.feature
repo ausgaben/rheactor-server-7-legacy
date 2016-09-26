@@ -16,12 +16,12 @@ Feature: Name change
     And I store the link to "update-firstname" as "firstnameChangeEndpoint"
     And I store the link to "update-lastname" as "lastnameChangeEndpoint"
     # Change the first name
-    Given "6" is the If-Match header
+    Given "4" is the If-Match header
     And this is the request body
     --------------
     "value": "Mike W."
     --------------
     When I PUT to {firstnameChangeEndpoint}
     Then the status code should be 204
-    And the etag header should equal "7"
+    And the etag header should equal "5"
     And the Last-Modified header should be now

@@ -28,7 +28,7 @@ Feature: Email change
     And the request body is empty
     When I POST to {emailChangeConfirmEndpoint}
     Then the status code should be 204
-    And the etag header should equal "5"
+    And the etag header should equal "4"
     And the Last-Modified header should be now
     # The email is changed
     Given "Bearer {token}" is the Authorization header

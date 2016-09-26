@@ -262,11 +262,11 @@ UserModel.prototype.applyEvent = function (event) {
       self.persisted(event.aggregateId, event.createdAt)
       break
     case UserPasswordChangedEvent.name:
-      self.setPassword(data.password)
+      self.password = data.password
       self.updated(event.createdAt)
       break
     case UserEmailChangedEvent.name:
-      self.setEmail(new EmailValue(data.email))
+      self.email = new EmailValue(data.email)
       self.updated(event.createdAt)
       break
     case UserActivatedEvent.name:
@@ -280,7 +280,7 @@ UserModel.prototype.applyEvent = function (event) {
       self.updated(event.createdAt)
       break
     case UserAvatarUpdatedEvent.name:
-      self.setAvatar(new URIValue(data.avatar))
+      self.avatar = new URIValue(data.avatar)
       self.updated(event.createdAt)
       break
     case SuperUserPermissionsGrantedEvent.name:
