@@ -20,13 +20,13 @@ Feature: Email change
     --------------
     "value": "mike.w.doe-{time}@example.com"
     --------------
-    When I POST to {emailChangeEndpoint}
+    When I PUT to {emailChangeEndpoint}
     Then the status code should be 201
     # Use the token to change the email
     Given I have the token that lets "mike.doe-{time}@example.com" change their email to "mike.w.doe-{time}@example.com" in "emailChangeConfirmationToken"
     And "Bearer {emailChangeConfirmationToken}" is the Authorization header
     And the request body is empty
-    When I POST to {emailChangeConfirmEndpoint}
+    When I PUT to {emailChangeConfirmEndpoint}
     Then the status code should be 204
     And the etag header should equal "4"
     And the Last-Modified header should be now
@@ -48,7 +48,7 @@ Feature: Email change
     --------------
     "value": "jane.doe-{time}@example.com"
     --------------
-    When I POST to {emailChangeEndpoint}
+    When I PUT to {emailChangeEndpoint}
     Then the status code should be 409
     And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
     And "$context" should equal "https://www.ietf.org/id/draft-ietf-appsawg-http-problem-01.txt"

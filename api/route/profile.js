@@ -31,7 +31,7 @@ module.exports = function (app, config, emitter, userRepository, tokenAuth, send
    * A user may request a to use a new email address, by supplying it to this endpoint
    * which will generate a token that is sent to the new address.
    */
-  app.post('/api/user/:id/email-change', tokenAuth, (req, res) => Promise
+  app.put('/api/user/:id/email-change', tokenAuth, (req, res) => Promise
     .try(() => {
       if (req.params.id !== req.user) throw AccessDeniedError(req.url, 'This is not you.')
       const schema = Joi.object().keys({
@@ -57,7 +57,7 @@ module.exports = function (app, config, emitter, userRepository, tokenAuth, send
    * The user then can use supply the token to this endpoint he received from calling '/api/user/:id/email-change'
    * to confirm the change.
    */
-  app.post('/api/user/:id/email-change/confirm', tokenAuth, (req, res) => Promise
+  app.put('/api/user/:id/email-change/confirm', tokenAuth, (req, res) => Promise
     .try(() => {
       if (req.params.id !== req.user) throw AccessDeniedError(req.url, 'This is not you.')
       if (!tokens.isChangeEmailToken(req.authInfo)) throw new AccessDeniedError(req.url, 'Not a password change token')

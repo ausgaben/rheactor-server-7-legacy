@@ -24,12 +24,12 @@ module.exports = (templateMailerClient, config) => {
         return tokens.changeEmailToken(config.get('api_host'), config.get('private_key'), config.get('token_lifetime'), cmd.user, {email: cmd.email.toString()})
           .then((token) => {
             return templateMailerClient
-              .send(mailerConfig['smtp_config'], mailerConfig['template_prefix'] + mailerConfig['email_change_template'], cmd.user.email.toString(), cmd.user.name(), {
+              .send(mailerConfig['smtp_config'], mailerConfig['template_prefix'] + mailerConfig['email_verification_template'], cmd.email.toString(), cmd.user.name(), {
                 recipient: {
                   firstname: cmd.user.firstname,
                   lastname: cmd.user.lastname
                 },
-                link: config.get('web_host') + config.get('base_href') + '#!/email-change/' + token.token,
+                link: config.get('web_host') + config.get('base_href') + '#!/account/email-change/' + token.token,
                 baseHref: config.get('base_href'),
                 webHost: config.get('web_host')
               })
