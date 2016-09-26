@@ -129,9 +129,13 @@ Feature: SuperUsers
     --------------
     When I POST to {userList}
     Then the status code should be 200
-    And I store the link to "toggle-active" of the 1st item as "activateUserEndpoint"
+    And I store the link to "update-active" of the 1st item as "activateUserEndpoint"
     # Activate the user
     Given "1" is the If-Match header
+    And this is the request body
+    --------------
+    "value": true
+    --------------
     When I PUT to {activateUserEndpoint}
     Then the status code should be 204
     And the etag header should equal "2"
@@ -148,8 +152,11 @@ Feature: SuperUsers
     # Deactivate the user
     Given "Bearer {angelasToken}" is the Authorization header
     And "2" is the If-Match header
-    And the request body is empty
-    When I DELETE {activateUserEndpoint}
+    And this is the request body
+    --------------
+    "value": false
+    --------------
+    When I PUT to {activateUserEndpoint}
     Then the status code should be 204
     # Now the user can't log-in
     Given the Authorization header is empty
@@ -202,7 +209,7 @@ Feature: SuperUsers
     Then the status code should be 200
     And "email" of the 1st item should equal "superuser.changed.email-change-test-{time}@example.com"
 
-  Scenario: When chaning the email of a user, new email address must not exist
+  Scenario: When changing the email of a user, new email address must not exist
 
     # Admin searches the user by email
     Given "Bearer {angelasToken}" is the Authorization header
@@ -224,3 +231,56 @@ Feature: SuperUsers
     And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
     And "$context" should equal "https://www.ietf.org/id/draft-ietf-appsawg-http-problem-01.txt"
     And "detail" should equal "Email address already in use: superuser.activation-test-{time}@example.com"
+
+  Scenario: can change the firstname and lastname of a user
+
+    Given the Authorization header is empty
+    And this is the request body
+    --------------
+    "email": "superuser.name-change-test-{time}@example.com",
+    "firstname": "Mike",
+    "lastname": "Doe",
+    "password": "some password"
+    --------------
+    When I POST to {registrationEndpoint}
+    Then the status code should be 201
+    # Admin searches the user by email
+    Given "Bearer {angelasToken}" is the Authorization header
+    And this is the request body
+    --------------
+    "email": "superuser.name-change-test-{time}@example.com"
+    --------------
+    When I POST to {userList}
+    Then the status code should be 200
+    And I store the link to "update-firstname" of the 1st item as "changeUserFirstnameEndpoint"
+    And I store the link to "update-lastname" of the 1st item as "changeUserLastnameEndpoint"
+    # Change its first name
+    Given "1" is the If-Match header
+    And this is the request body
+    --------------
+    "value": "Mike W."
+    --------------
+    When I PUT to {changeUserFirstnameEndpoint}
+    Then the status code should be 204
+    And the etag header should equal "2"
+    And the Last-Modified header should be now
+    # Change its last name
+    Given "2" is the If-Match header
+    And this is the request body
+    --------------
+    "value": "Doey"
+    --------------
+    When I PUT to {changeUserLastnameEndpoint}
+    Then the status code should be 204
+    And the etag header should equal "3"
+    And the Last-Modified header should be now
+    # Search for the changed user
+    Given "Bearer {angelasToken}" is the Authorization header
+    And this is the request body
+    --------------
+    "email": "superuser.name-change-test-{time}@example.com"
+    --------------
+    When I POST to {userList}
+    Then the status code should be 200
+    And "firstname" of the 1st item should equal "Mike W."
+    And "lastname" of the 1st item should equal "Doey"

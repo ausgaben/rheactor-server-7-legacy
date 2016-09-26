@@ -1,26 +1,16 @@
 'use strict'
 
 const Promise = require('bluebird')
-const AccessDeniedError = require('rheactor-value-objects/errors/access-denied')
 const CreateUserCommand = require('../../command/user/create')
-const ActivateUserCommand = require('../../command/user/activate')
-const DeactivateUserCommand = require('../../command/user/deactivate')
 const EmailValue = require('rheactor-value-objects/email')
 const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
-const ConflictError = require('rheactor-value-objects/errors/conflict')
 const Joi = require('joi')
 const _merge = require('lodash/merge')
 const Pagination = require('../../util/pagination')
 const sendPaginatedListResponse = require('../pagination').sendPaginatedListResponse
 const URIValue = require('rheactor-value-objects/uri')
 const User = require('rheactor-web-app/js/model/user')
-const checkVersion = require('../check-version')
-
-const verifySuperUser = (req, userRepo) => userRepo.getById(req.user)
-  .then(admin => {
-    if (!admin.superUser) throw new AccessDeniedError(req.url, 'SuperUser privileges required.')
-    return admin
-  })
+const verifySuperUser = require('../verify-superuser')
 
 /**
  * @param {express.app} app
@@ -100,50 +90,6 @@ module.exports = (app, config, emitter, userRepo, tokenAuth, jsonld, sendHttpPro
         })
         .then(paginatedResult => sendPaginatedListResponse(new URIValue(config.get('api_host')), req, res, User.$context, jsonld, user => transformer(user), paginatedResult))
         .then(() => res.status(200).send())
-    })
-    .catch(sendHttpProblem.bind(null, res))
-  )
-
-  /**
-   * Admins can activate users
-   */
-  app.put('/api/user/:id/active', tokenAuth, (req, res) => Promise
-    .join(
-      verifySuperUser(req, userRepo),
-      userRepo.getById(req.params.id)
-    )
-    .spread((superUser, user) => {
-      if (user.isActive) throw new ConflictError('User is already active!')
-      checkVersion(req.headers['if-match'], user)
-      return emitter.emit(new ActivateUserCommand(user, superUser))
-        .then(() => res
-          .header('etag', user.aggregateVersion())
-          .header('last-modified', new Date(user.modifiedAt()).toUTCString())
-          .status(204)
-          .send()
-        )
-    })
-    .catch(sendHttpProblem.bind(null, res))
-  )
-
-  /**
-   * Admins can deactivate users
-   */
-  app.delete('/api/user/:id/active', tokenAuth, (req, res) => Promise
-    .join(
-      verifySuperUser(req, userRepo),
-      userRepo.getById(req.params.id)
-    )
-    .spread((superUser, user) => {
-      if (!user.isActive) throw new ConflictError('User is not active!')
-      checkVersion(req.headers['if-match'], user)
-      return emitter.emit(new DeactivateUserCommand(user, superUser))
-        .then(() => res
-          .header('etag', user.aggregateVersion())
-          .header('last-modified', new Date(user.modifiedAt()).toUTCString())
-          .status(204)
-          .send()
-        )
     })
     .catch(sendHttpProblem.bind(null, res))
   )

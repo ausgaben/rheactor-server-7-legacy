@@ -11,12 +11,7 @@ const Joi = require('joi')
 const checkVersion = require('../check-version')
 const _merge = require('lodash/merge')
 const tokens = require('../../util/tokens')
-
-const verifySuperUser = (req, userRepo) => userRepo.getById(req.user)
-  .then(admin => {
-    if (!admin.superUser) throw new AccessDeniedError(req.url, 'SuperUser privileges required.')
-    return admin
-  })
+const verifySuperUser = require('../verify-superuser')
 
 /**
  * Manages email change requests.

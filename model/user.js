@@ -15,6 +15,7 @@ const UserEmailChangedEvent = require('../event/user/email-changed')
 const UserActivatedEvent = require('../event/user/activated')
 const UserDeactivatedEvent = require('../event/user/deactivated')
 const UserAvatarUpdatedEvent = require('../event/user/avatar-updated')
+const UserPropertyChangedEvent = require('../event/user/property-changed')
 const SuperUserPermissionsGrantedEvent = require('../event/user/super-user-permissions-granted')
 const SuperUserPermissionsRevokedEvent = require('../event/user/super-user-permissions-revoked')
 const URIValue = require('rheactor-value-objects/uri')
@@ -205,6 +206,41 @@ UserModel.aggregate = function (id, events) {
 }
 
 /**
+ * @param {UserModel} self
+ * @param {string} property
+ * @param {object} value
+ * @returns {UserPropertyChangedEvent}
+ */
+const stringPropertyChange = (self, property, value) => {
+  const v = Joi.validate(value, Joi.string().required().trim())
+  if (v.error) {
+    throw new ValidationFailedError('Validation failed', value, v.error)
+  }
+  if (v.value === self[property]) throw new ConflictError(property + ' not changed!')
+  self[property] = v.value
+  self.updated()
+  return new UserPropertyChangedEvent(self.aggregateId(), property, v.value)
+}
+
+/**
+ * @param {string} firstname
+ * @return {UserPropertyChangedEvent}
+ * @throws {ConflictError}
+ */
+UserModel.prototype.setFirstname = function (firstname) {
+  return stringPropertyChange(this, 'firstname', firstname)
+}
+
+/**
+ * @param {string} lastname
+ * @return {UserPropertyChangedEvent}
+ * @throws {ConflictError}
+ */
+UserModel.prototype.setLastname = function (lastname) {
+  return stringPropertyChange(this, 'lastname', lastname)
+}
+
+/**
  * Applies the event
  *
  * @param {ModelEvent} event
@@ -253,6 +289,10 @@ UserModel.prototype.applyEvent = function (event) {
       break
     case SuperUserPermissionsRevokedEvent.name:
       self.superUser = false
+      self.updated(event.createdAt)
+      break
+    case UserPropertyChangedEvent.name:
+      self[data.property] = data.value
       self.updated(event.createdAt)
       break
     default:
