@@ -17,7 +17,7 @@ module.exports = {
         data.webHost = backend.config.get('web_host')
         data.baseHref = backend.config.get('base_href')
         return new TemplateMailerClient(mailerConfig['endpoint'], mailerConfig['api_key'])
-          .send(mailerConfig['smtp_config'], mailerConfig['template_prefix'] + template, to, name, data)
+          .send(mailerConfig['transport'], mailerConfig['template_prefix'] + template, to, name, data)
           .then(() => {
             console.log('Sent', template, 'to', to)
           })

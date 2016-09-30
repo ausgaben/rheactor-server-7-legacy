@@ -32,7 +32,7 @@ nconf.defaults({
   'public_key': null,
   'bcrypt_rounds': 14,
   'template_mailer': {
-    'smtp_config': 'server'
+    'transport': 'server'
   }
 })
 

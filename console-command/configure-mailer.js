@@ -10,9 +10,9 @@ module.exports = {
     let mailerConfig = backend.config.get('template_mailer')
     let mailer = new TemplateMailerClient(mailerConfig.endpoint, mailerConfig.api_key)
     return Promise.join(
-      mailer.config(mailerConfig['smtp_config'], mailerConfig.credentials, mailerConfig.from, mailerConfig.name)
+      mailer.config(mailerConfig['transport'], mailerConfig.from, mailerConfig.name)
         .then(() => {
-          console.log('Updated smtp configuration:', mailerConfig['smtp_config'])
+          console.log('Updated transport configuration:', mailerConfig['transport'])
         }),
       emails.load()
         .map((email) => {
