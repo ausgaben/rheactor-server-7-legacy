@@ -1,5 +1,7 @@
 'use strict'
 
+// @flow
+
 const passport = require('passport')
 const BearerStrategy = require('passport-http-bearer').Strategy
 const tokenBearerStrategy = require('./token-bearer-strategy')
@@ -7,6 +9,13 @@ const JSONLD = require('../jsonld')
 const tokens = require('../../util/tokens')
 const ModelTransformer = require('../../api/transformer')
 const rheactorExpressBaseConfig = require('./base')
+
+/*::
+ import type {UserRepositoryType} from '../../repository/user-repository'
+ export type AppRepositories = {
+ user: UserRepositoryType
+ }
+ */
 
 /**
  * @param {express.app} app
@@ -16,7 +25,7 @@ const rheactorExpressBaseConfig = require('./base')
  * @param {function} transformer
  * @param {JSONLD} jsonld
  */
-module.exports = (app, config, repositories, emitter, transformer, jsonld) => {
+module.exports = (app /*:any*/, config /*:any*/, repositories /*:AppRepositories*/, emitter /*:any*/, transformer /*:any*/, jsonld /*:any*/) => {
   if (!jsonld) {
     jsonld = JSONLD(config.get('api_host'))
   }
@@ -31,7 +40,7 @@ module.exports = (app, config, repositories, emitter, transformer, jsonld) => {
   const base = rheactorExpressBaseConfig(config, app)
 
   app.use(passport.initialize())
-  let verifyToken = (token) => {
+  let verifyToken = (token /*:any*/) => {
     return tokens.verify(config.get('api_host'), config.get('public_key'), token)
   }
   passport.use(new BearerStrategy(tokenBearerStrategy(verifyToken)))

@@ -1,5 +1,13 @@
 'use strict'
 
+// @flow
+
+/*::
+ export type UserRepositoryType = {
+ findByEmail: (email: EmailValue) => Promise<UserModel>
+ }
+ */
+
 const AggregateRepository = require('rheactor-event-store/aggregate-repository')
 const ModelEvent = require('rheactor-event-store/model-event')
 const AggregateIndex = require('rheactor-event-store/aggregate-index')
@@ -9,6 +17,7 @@ const EntryNotFoundError = require('rheactor-value-objects/errors/entry-not-foun
 const Promise = require('bluebird')
 const UserCreatedEvent = require('../event/user/created')
 const UserEmailChangedEvent = require('../event/user/email-changed')
+const EmailValue = require('rheactor-value-objects/email')
 
 /**
  * Creates a new user repository
@@ -16,7 +25,7 @@ const UserEmailChangedEvent = require('../event/user/email-changed')
  * @param {redis.client} redis
  * @constructor
  */
-var UserRepository = function (redis) {
+var UserRepository = function (redis /*:any*/) {
   AggregateRepository.call(this, UserModel, 'user', redis)
   this.index = new AggregateIndex(this.aggregateAlias, redis)
 }
@@ -87,7 +96,8 @@ UserRepository.prototype.add = function (user) {
     firstname: user.firstname,
     lastname: user.lastname,
     password: user.password,
-    isActive: user.isActive
+    isActive: user.isActive,
+    avatar: undefined
   }
   if (user.avatar) {
     data.avatar = user.avatar.toString()

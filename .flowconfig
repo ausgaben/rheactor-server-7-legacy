@@ -1,0 +1,10 @@
+[ignore]
+.*/node_modules/findup/.*
+.*/node_modules/npmconf/.*
+.*/node_modules/config-chain/.*
+
+[include]
+
+[libs]
+
+[options]

@@ -1,11 +1,18 @@
 'use strict'
 
+// @flow
+
 const Promise = require('bluebird')
 const EmailValue = require('rheactor-value-objects/email')
 const CreateUserCommand = require('../../command/user/create')
 const bcrypt = Promise.promisifyAll(require('bcrypt'))
 const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
 const ConflictError = require('rheactor-value-objects/errors/conflict')
+const User = require('../../model/user')
+
+/*::
+import type {UserRepositoryType} from '../../repository/user-repository'
+*/
 
 /**
  * @param {express.app} app
@@ -14,7 +21,7 @@ const ConflictError = require('rheactor-value-objects/errors/conflict')
  * @param {UserRepository} userRepository
  * @param {function} sendHttpProblem
  */
-module.exports = function (app, config, emitter, userRepository, sendHttpProblem) {
+module.exports = function (app /*:any*/, config /*:any*/, emitter /*:any*/, userRepository /*:UserRepositoryType*/, sendHttpProblem /*:function*/) {
   /**
    * Register a new account, needs to be activated afterwards
    */
@@ -30,10 +37,7 @@ module.exports = function (app, config, emitter, userRepository, sendHttpProblem
           delete req.body.password
           let email = new EmailValue(req.body.email)
           return userRepository.findByEmail(email)
-            .then((user) => {
-              if (user) {
-                throw new ConflictError('Already registered!')
-              }
+            .then((user /*:User*/) => {
               emitter.emit(new CreateUserCommand(email, req.body.firstname, req.body.lastname, hashedPassword))
             })
         })
