@@ -25,8 +25,8 @@ install:
 before_script:
   - npm prune
 script:
-  - yarn run lint
-  - yarn run test:coverage-travis
+  - npm run lint
+  - npm run test:coverage-travis
 after_success:
   - npm run semantic-release
 branches:
