@@ -19,11 +19,14 @@ node_js:
   - 'stable'
 before_install:
   - npm i -g npm@^2.0.0
+  - npm i -g yarn
+install:
+  - yarn
 before_script:
   - npm prune
 script:
-  - npm run lint
-  - npm run test:coverage-travis
+  - yarn run lint
+  - yarn run test:coverage-travis
 after_success:
   - npm run semantic-release
 branches:
