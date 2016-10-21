@@ -9,8 +9,7 @@ module.exports = function (app, config) {
       .send(new Status({
         status: 'ok',
         environment: config.get('environment'),
-        version: config.get('version'),
-        age: Math.floor((Date.now() - config.get('deployVersion')) / 1000)
+        version: config.get('version')
       }))
   })
 }

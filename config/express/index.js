@@ -11,12 +11,13 @@ const rheactorExpressBaseConfig = require('./base')
 /**
  * @param {express.app} app
  * @param {nconf} config
+ * @param {ojbect} webConfig
  * @param repositories
  * @param {BackendEmitter} emitter
  * @param {function} transformer
  * @param {JSONLD} jsonld
  */
-module.exports = (app, config, repositories, emitter, transformer, jsonld) => {
+module.exports = (app, config, webConfig, repositories, emitter, transformer, jsonld) => {
   if (!jsonld) {
     jsonld = JSONLD(config.get('api_host'))
   }
@@ -28,7 +29,7 @@ module.exports = (app, config, repositories, emitter, transformer, jsonld) => {
     }
   }
 
-  const base = rheactorExpressBaseConfig(config, app)
+  const base = rheactorExpressBaseConfig(config, webConfig, app)
 
   app.use(passport.initialize())
   let verifyToken = (token) => {

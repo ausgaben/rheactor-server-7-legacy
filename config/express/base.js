@@ -7,14 +7,15 @@ const sendHttpProblemFunc = require('../../api/send-http-problem')
 
 /**
  * @param {nconf} config
+ * @param {ojbect} webConfig
  * @param {express.app} app
  * @returns {{sendHttpProblem: <function>}}
  */
-module.exports = (config, app) => {
+module.exports = (config, webConfig, app) => {
   require('fast-url-parser').replace()
 
   app.enable('trust proxy')
-  app.use(bodyParser.json({type: config.get('mime_type')}))
+  app.use(bodyParser.json({type: webConfig.mimeType}))
 
   app.use(cors({
     origin: config.get('web_host'),
@@ -38,7 +39,7 @@ module.exports = (config, app) => {
   })
 
   // Set content type
-  const CONTENT_TYPE = config.get('mime_type') + '; charset=utf-8'
+  const CONTENT_TYPE = webConfig.mimeType + '; charset=utf-8'
   app.use((req, res, next) => {
     if (/\/api/.test(req.url)) {
       res.header('Content-Type', CONTENT_TYPE)

@@ -9,8 +9,9 @@ let tokens = require('../util/tokens')
  *
  * @param {TemplateMailerClient} templateMailerClient
  * @param {object} config
+ * @param {object} webConfig
  */
-module.exports = (templateMailerClient, config) => {
+module.exports = (templateMailerClient, config, webConfig) => {
   /**
    * {EmittedEventsHandlerRegistry} c
    */
@@ -29,8 +30,8 @@ module.exports = (templateMailerClient, config) => {
                   firstname: cmd.user.firstname,
                   lastname: cmd.user.lastname
                 },
-                link: config.get('web_host') + config.get('base_href') + '#!/activate/' + token.token,
-                baseHref: config.get('base_href'),
+                link: config.get('web_host') + webConfig.baseHref + '#!/activate/' + token.token,
+                baseHref: webConfig.baseHref,
                 webHost: config.get('web_host')
               })
               .then(() => {

@@ -8,6 +8,7 @@ module.exports = {
   description: 'Send a testmail',
   action: (backend, template, to, name) => {
     let mailerConfig = backend.config.get('template_mailer')
+    let webConfig = backend.webConfig
     return emails.load()
       .filter((email) => {
         return email.identifier === template
@@ -15,7 +16,7 @@ module.exports = {
       .spread((email) => {
         let data = email.defaults
         data.webHost = backend.config.get('web_host')
-        data.baseHref = backend.config.get('base_href')
+        data.baseHref = webConfig.baseHref
         return new TemplateMailerClient(mailerConfig['endpoint'], mailerConfig['api_key'])
           .send(mailerConfig['transport'], mailerConfig['template_prefix'] + template, to, name, data)
           .then(() => {

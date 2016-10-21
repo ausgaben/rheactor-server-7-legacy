@@ -11,9 +11,10 @@ const _camelCase = require('lodash/camelCase')
  * @param {UserRepository} repos
  * @param {BackendEmitter} emitter
  * @param {nconf} config
+ * @param {object} webConfig
  * @param {TemplateMailerClient} templateMailerClient
  */
-module.exports = (repos, emitter, config, templateMailerClient) => {
+module.exports = (repos, emitter, config, webConfig, templateMailerClient) => {
   let c = new EmittedEventsHandlerRegistry(emitter)
 
   // Register repository command handler
@@ -25,7 +26,7 @@ module.exports = (repos, emitter, config, templateMailerClient) => {
     c.addHandler(handler.command, handler.handler.bind(null, repos[repoName]))
   })
 
-  require('../command-handler/user-confirm-email-handler')(templateMailerClient, config)(c)
-  require('../command-handler/user-send-password-change-confirmation-link-handler')(templateMailerClient, config)(c)
-  require('../command-handler/user-send-email-change-confirmation-link-handler')(templateMailerClient, config)(c)
+  require('../command-handler/user-confirm-email-handler')(templateMailerClient, config, webConfig)(c)
+  require('../command-handler/user-send-password-change-confirmation-link-handler')(templateMailerClient, config, webConfig)(c)
+  require('../command-handler/user-send-email-change-confirmation-link-handler')(templateMailerClient, config, webConfig)(c)
 }

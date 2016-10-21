@@ -5,6 +5,10 @@ Promise.longStackTraces()
 const EntryNotFoundError = require('rheactor-value-objects/errors/entry-not-found')
 const EntryAlreadyExistsError = require('rheactor-value-objects/errors/entry-already-exists')
 const config = require('./config')
+const webConfig = {
+  baseHref: '/',
+  mimeType: 'application/vnd.resourceful-humans.rheactor.v1+json'
+}
 
 // Event listening
 const emitter = require('../services/emitter')
@@ -38,7 +42,7 @@ const templateMailer = {
 }
 
 // Event handling
-require('../config/command-handler')(repositories, emitter, config, templateMailer)
+require('../config/command-handler')(repositories, emitter, config, webConfig, templateMailer)
 require('../config/event-handler')(repositories, emitter, config)
 
 // Password strength
@@ -47,6 +51,7 @@ config.set('bcrypt_rounds', 1)
 module.exports = {
   repositories,
   config,
+  webConfig,
   emitter,
   redis
 }

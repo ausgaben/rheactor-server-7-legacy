@@ -14,4 +14,4 @@ exports.redis = backend.redis.client
 exports.repositories = backend.repositories
 
 // Configure parsing for superagent
-require('superagent').serialize[backend.config.get('mime_type')] = JSON.stringify
+require('superagent').serialize[backend.webConfig.mimeType] = JSON.stringify
