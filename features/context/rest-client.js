@@ -251,6 +251,12 @@ module.exports = {
       next()
     })
 
+    .then(/"([^"]+)" should be ([^ ]+) ([+0-9,\.-]+)/, function (node, assertion, number, next) {
+      let context = this.ctx
+      expect(context.response.body[node]).to.be[assertion](+number)
+      next()
+    })
+
     .then(/"([^"]+)" should equal (true|false)/, function (node, bool, next) {
       let context = this.ctx
       expect(context.response.body[node]).to.equal(bool === 'true')
