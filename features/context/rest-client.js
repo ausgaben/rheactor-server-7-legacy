@@ -262,7 +262,6 @@ module.exports = {
     .then(/"([^"]+)" should equal (true|false)/, function (node, bool, next) {
       const context = this.ctx
       const data = _property(node)(context.response.body)
-      console.log(JSON.stringify(data))
       expect(data, `${node} should be ${bool}`).to.equal(bool === 'true')
       next()
     })
