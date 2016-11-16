@@ -1,17 +1,17 @@
 'use strict'
 
-let _forIn = require('lodash/forIn')
-let _template = require('lodash/template')
-let _filter = require('lodash/filter')
-let _map = require('lodash/map')
-let _merge = require('lodash/merge')
-let expect = require('chai').expect
-let Yadda = require('yadda')
-let English = Yadda.localisation.English
-let dictionary = new Yadda.Dictionary()
-let request = require('supertest')
-let jwt = require('jsonwebtoken')
-let utils = require('./util/storage')
+const _forIn = require('lodash/forIn')
+const _filter = require('lodash/filter')
+const _map = require('lodash/map')
+const _merge = require('lodash/merge')
+const _property = require('lodash/property')
+const expect = require('chai').expect
+const Yadda = require('yadda')
+const English = Yadda.localisation.English
+const dictionary = new Yadda.Dictionary()
+const request = require('supertest')
+const jwt = require('jsonwebtoken')
+const utils = require('./util/storage')
 
 dictionary
   .define('json', /([^\u0000]*)/, function (data, done) {
@@ -22,7 +22,7 @@ dictionary
   })
   .define('num', /(\d+)/, Yadda.converters.integer)
 
-let testHost = 'http://localhost:8080'
+const testHost = 'http://localhost:8080'
 
 function client (context) {
   if (!context.client) {
@@ -90,53 +90,55 @@ module.exports = {
   library: English.library(dictionary)
 
     .given('"$value" is the $header header', function (value, name, next) {
-      let context = this.ctx
+      const context = this.ctx
       utils.header(context, name, utils.template(value, utils.data(context)))
       next()
     })
 
     .given('the $header header is empty', function (name, next) {
-      let context = this.ctx
+      const context = this.ctx
       utils.header(context, name, undefined)
       next()
     })
 
     .given('this is the request body\n$json', function (json, next) {
-      let context = this.ctx
+      const context = this.ctx
       context.body = json
       next()
     })
 
     .given('the request body is empty', function (next) {
-      let context = this.ctx
+      const context = this.ctx
       context.body = undefined
       next()
     })
 
     .when('I $method to $endpoint', function (method, endpoint, next) {
-      let context = this.ctx
+      const context = this.ctx
       doRequest(context, method, endpoint, next)
     })
 
     .when('I $method $endpoint', function (method, endpoint, next) {
-      let context = this.ctx
+      const context = this.ctx
       doRequest(context, method, endpoint, next)
     })
 
     .when('I store "$node" as "$storage"', function (node, storage, next) {
-      let context = this.ctx
-      utils.data(context, storage, context.response.body[node])
+      const context = this.ctx
+      const data = _property(node)(context.response.body)
+      utils.data(context, storage, data)
       next()
     })
 
     .when('I store "$node" of the ([0-9]+)[a-z]+ item as "$storage"', function (node, num, storage, next) {
-      let context = this.ctx
-      utils.data(context, storage, context.response.body.items[num - 1][node])
+      const context = this.ctx
+      const data = _property(node)(context.response.body.items[num - 1])
+      utils.data(context, storage, data)
       next()
     })
 
     .when('I store the link to the list "$context" as "$storage"', function ($context, storage, next) {
-      let context = this.ctx
+      const context = this.ctx
       let matched = _filter(context.response.body.$links, (link) => {
         return link.list && link.context === $context
       })
@@ -145,7 +147,7 @@ module.exports = {
     })
 
     .when('I store the link to the list "$context" of the ([0-9]+)[a-z]+ item as "$storage"', function ($context, num, storage, next) {
-      let context = this.ctx
+      const context = this.ctx
       let matched = _filter(context.response.body.items[num - 1].$links, (link) => {
         return link.list && link.context === $context
       })
@@ -154,7 +156,7 @@ module.exports = {
     })
 
     .when('I store the link to "$relation" as "$storage"', function (relation, storage, next) {
-      let context = this.ctx
+      const context = this.ctx
       let matched = _filter(context.response.body.$links, (link) => {
         return link.rel === relation
       })
@@ -163,7 +165,7 @@ module.exports = {
     })
 
     .when('I store the link of "$relatedContext" as "$storage"', function (relatedContext, storage, next) {
-      let context = this.ctx
+      const context = this.ctx
       let matched = _filter(context.response.body.$links, (link) => {
         return link.context === relatedContext
       })
@@ -172,7 +174,7 @@ module.exports = {
     })
 
     .when('I store the link to "$relation" of the ([0-9]+)[a-z]+ item as "$storage"', function (relation, num, storage, next) {
-      let context = this.ctx
+      const context = this.ctx
       let matched = _filter(context.response.body.items[num - 1].$links, (link) => {
         return link.rel === relation
       })
@@ -181,13 +183,13 @@ module.exports = {
     })
 
     .when('I store the $header header as "$storage"', function (header, storage, next) {
-      let context = this.ctx
+      const context = this.ctx
       utils.data(context, storage, context.response.header[header.toLowerCase()])
       next()
     })
 
     .when('I follow the redirect', function (next) {
-      let context = this.ctx
+      const context = this.ctx
       let agent = client(context)
       expect(context.response.header.location, 'Location header not present').to.not.equal(undefined)
       let request = context.request = agent.get(context.response.header.location.replace(testHost, ''))
@@ -203,7 +205,7 @@ module.exports = {
     })
 
     .then('the status code should be $num', function (status, next) {
-      let context = this.ctx
+      const context = this.ctx
       if (!context.response) {
         return next(new Error('No HTTP response received from\nRequest:  ' + context.request.method + ' ' + context.request.url))
       }
@@ -216,73 +218,78 @@ module.exports = {
     })
 
     .then('the $header header should equal "$value"', function (name, value, next) {
-      let context = this.ctx
+      const context = this.ctx
       expect(context.response.header[name.toLowerCase()]).to.equal(value)
       next()
     })
 
     .then('the $header header should exist', function (name, next) {
-      let context = this.ctx
+      const context = this.ctx
       expect(context.response.header[name.toLowerCase()]).to.not.equal(undefined)
       next()
     })
 
     .then('"$node" should equal "$value"', function (node, value, next) {
-      let context = this.ctx
+      const context = this.ctx
       value = utils.template(value, utils.data(context))
-      let data = context.response.body[node]
-      if (/\./.test(node)) { // if child nodes are addressed via "parent.child" notation, use templating
-        data = _template('{' + node + '}', {interpolate: /\{([\s\S]+?)\}/g})(context.response.body)
-      }
+      const data = _property(node)(context.response.body)
       expect(data).to.equal(value)
       next()
     })
 
     .then('"$node" should not equal "$value"', function (node, value, next) {
-      let context = this.ctx
+      const context = this.ctx
       value = utils.template(value, utils.data(context))
-      expect(context.response.body[node]).to.not.equal(value)
+      const data = _property(node)(context.response.body)
+      expect(data).to.not.equal(value)
       next()
     })
 
     .then(/"([^"]+)" should equal ([+0-9,\.-]+)/, function (node, number, next) {
-      let context = this.ctx
-      expect(context.response.body[node]).to.equal(+number)
+      const context = this.ctx
+      const data = _property(node)(context.response.body)
+      expect(data).to.equal(+number)
       next()
     })
 
     .then(/"([^"]+)" should be ([^ ]+) ([+0-9,\.-]+)/, function (node, assertion, number, next) {
-      let context = this.ctx
-      expect(context.response.body[node]).to.be[assertion](+number)
+      const context = this.ctx
+      const data = _property(node)(context.response.body)
+      expect(data).to.be[assertion](+number)
       next()
     })
 
     .then(/"([^"]+)" should equal (true|false)/, function (node, bool, next) {
-      let context = this.ctx
-      expect(context.response.body[node]).to.equal(bool === 'true')
+      const context = this.ctx
+      const data = _property(node)(context.response.body)
+      console.log(JSON.stringify(data))
+      expect(data, `${node} should be ${bool}`).to.equal(bool === 'true')
       next()
     })
 
     .given('"$node" should equal\n$text', function (node, text, next) {
-      let context = this.ctx
-      expect(context.response.body[node]).to.equal(text)
+      const context = this.ctx
+      const data = _property(node)(context.response.body)
+      expect(data).to.equal(text)
       next()
     })
 
     .then('"$node" should exist', function (node, next) {
-      let context = this.ctx
-      expect(context.response.body[node]).to.not.equal(undefined)
+      const context = this.ctx
+      const data = _property(node)(context.response.body)
+      expect(data).to.not.equal(undefined)
       next()
     })
 
     .then('"$node" should not exist', function (node, next) {
-      let context = this.ctx
-      expect(context.response.body[node]).to.equal(undefined)
+      const context = this.ctx
+      const data = _property(node)(context.response.body)
+      expect(data).to.equal(undefined)
       next()
     })
 
     .then(/a list of "([^"]+)" with ([0-9]+) of ([0-9]+) items? should be returned/, function (itemContext, num, total, next) {
-      let context = this.ctx
+      const context = this.ctx
       let list = context.response.body
       expect(context.response.statusCode).to.equal(200)
       expect(list.$context).to.equal('https://github.com/RHeactor/nucleus/wiki/JsonLD#List')
@@ -295,7 +302,7 @@ module.exports = {
     })
 
     .then(/a list of "([^"]+)" should be returned/, function (itemContext, next) {
-      let context = this.ctx
+      const context = this.ctx
       expect(context.response.statusCode).to.equal(200)
       let list = context.response.body
       expect(list.$context).to.equal('https://github.com/RHeactor/nucleus/wiki/JsonLD#List')
@@ -306,22 +313,19 @@ module.exports = {
     })
 
     .then('I filter the list by $property equals (true|false)', function (property, bool, next) {
-      let context = this.ctx
+      const context = this.ctx
       context.response.body.items = _filter(context.response.body.items, (item) => {
-        return item[property] === (bool === 'true')
+        return _property(property)(item) === (bool === 'true')
       })
       context.response.body.__filtered = true
       next()
     })
 
     .then(/I filter the list by ([^ ]+) contains "([^"]+)/, function (property, text, next) {
-      let context = this.ctx
+      const context = this.ctx
       text = utils.template(text, utils.data(context))
       context.response.body.items = _filter(context.response.body.items, (item) => {
-        let data = item[property]
-        if (/\./.test(property)) { // if child nodes are addressed via "parent.child" notation, use templating
-          data = _template('{' + property + '}', {interpolate: /\{([\s\S]+?)\}/g})(item)
-        }
+        let data = _property(property)(item)
         return data.search(text) >= 0
       })
       context.response.body.__filtered = true
@@ -329,48 +333,47 @@ module.exports = {
     })
 
     .then(/"([^"]+)" of the ([0-9]+)[a-z]+ item should equal "([^"]+)"/, function (node, num, value, next) {
-      let context = this.ctx
+      const context = this.ctx
       value = utils.template(value, utils.data(context))
-      let data = context.response.body.items[num - 1][node]
-      if (/\./.test(node)) { // if child nodes are addressed via "parent.child" notation, use templating
-        data = _template('{' + node + '}', {interpolate: /\{([\s\S]+?)\}/g})(context.response.body.items[num - 1])
-      }
+      const data = _property(node)(context.response.body.items[num - 1])
       expect(data).to.equal(value)
       next()
     })
 
     .then(/"([^"]+)" of the ([0-9]+)[a-z]+ item should equal (true|false)/, function (node, num, bool, next) {
-      let context = this.ctx
-      expect(context.response.body.items[num - 1][node]).to.equal(bool === 'true')
+      const context = this.ctx
+      const data = _property(node)(context.response.body.items[num - 1])
+      expect(data).to.equal(bool === 'true')
       next()
     })
 
     .then(/"([^"]+)" of the ([0-9]+)[a-z]+ item should equal ([+0-9,\.-]+)/, function (node, num, number, next) {
-      let context = this.ctx
-      expect(context.response.body.items[num - 1][node]).to.equal(+number)
+      const context = this.ctx
+      const data = _property(node)(context.response.body.items[num - 1])
+      expect(data).to.equal(+number)
       next()
     })
 
     .then('JWT $property should exist', function (property, next) {
-      let context = this.ctx
+      const context = this.ctx
       checkJwtProperty(context, property, function (value) {
         expect(value).to.not.equal(undefined)
       }, next)
     })
 
     .then('JWT $property should equal "$value"', function (property, value, next) {
-      let context = this.ctx
+      const context = this.ctx
       value = utils.template(value, utils.data(context))
       checkJwtProperty(context, property, value, next)
     })
 
     .then(/JWT ([^ ]+) should equal (true|false)/, function (property, bool, next) {
-      let context = this.ctx
+      const context = this.ctx
       checkJwtProperty(context, property, bool === 'true', next)
     })
 
     .then(/JWT ([^ ]+) should be ([0-9]+) ([a-z]+) in the (future|past)/, function (property, num, type, dir, next) {
-      let context = this.ctx
+      const context = this.ctx
       let d = new Date()
       let m = 1
       if (type.charAt(0) === 'm') {
@@ -389,7 +392,7 @@ module.exports = {
     })
 
     .then('I parse JWT token into "$name"', function (name, next) {
-      let context = this.ctx
+      const context = this.ctx
       utils.data(context, name, _merge(
         {
           $context: context.response.body.$context,
@@ -417,7 +420,7 @@ module.exports = {
 
     // Debug stuff
     .then('I print the response', function (next) {
-      let context = this.ctx
+      const context = this.ctx
       if (context.response.body.$context && context.response.body.$context === 'https://github.com/RHeactor/nucleus/wiki/JsonLD#List') {
         console.log('List containing', context.response.body.items.length, 'of', context.response.body.total, 'items of', context.response.body.context)
         console.log('Links:')
