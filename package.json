@@ -47,7 +47,7 @@
     "rheactor-web-app": "^2.8.1",
     "rheactor-yadda-feature-runner": "^1.0.0",
     "template-mailer-aws-lambda-client": "^2.0.0",
-    "transactional-emails": "^1.15.0"
+    "transactional-emails": ">=1.15.0 <2.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
