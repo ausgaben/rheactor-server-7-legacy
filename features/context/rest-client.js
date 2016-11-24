@@ -245,14 +245,14 @@ module.exports = {
       next()
     })
 
-    .then(/"([^"]+)" should equal ([+0-9,\.-]+)/, function (node, number, next) {
+    .then(/"([^"]+)" should equal ([+0-9,.-]+)/, function (node, number, next) {
       const context = this.ctx
       const data = _property(node)(context.response.body)
       expect(data).to.equal(+number)
       next()
     })
 
-    .then(/"([^"]+)" should be ([^ ]+) ([+0-9,\.-]+)/, function (node, assertion, number, next) {
+    .then(/"([^"]+)" should be ([^ ]+) ([+0-9,.-]+)/, function (node, assertion, number, next) {
       const context = this.ctx
       const data = _property(node)(context.response.body)
       expect(data).to.be[assertion](+number)
@@ -346,7 +346,7 @@ module.exports = {
       next()
     })
 
-    .then(/"([^"]+)" of the ([0-9]+)[a-z]+ item should equal ([+0-9,\.-]+)/, function (node, num, number, next) {
+    .then(/"([^"]+)" of the ([0-9]+)[a-z]+ item should equal ([+0-9,.-]+)/, function (node, num, number, next) {
       const context = this.ctx
       const data = _property(node)(context.response.body.items[num - 1])
       expect(data).to.equal(+number)
