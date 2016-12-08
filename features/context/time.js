@@ -24,6 +24,10 @@ module.exports = {
       }
       next()
     })
+    .given('it is $weekday', function (weekday, next) {
+      clock = lolex.install(moment().day(weekday).valueOf())
+      next()
+    })
     .given('we are back to the present', function (next) {
       clock.uninstall()
       next()
