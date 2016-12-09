@@ -5,6 +5,7 @@
 - Add aggregated model cache
 - Process backend events asynchronously
   - push notification commands to AWS SNS, which calls Lambda to send emails
+- Move image processing component to separate microservice
 
 ## Json-LD
 
