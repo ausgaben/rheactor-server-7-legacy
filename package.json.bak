@@ -1,0 +1,71 @@
+{
+  "name": "rheactor-server",
+  "description": "Core server components for RHeactor applications",
+  "scripts": {
+    "lint": "standard",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "test": "environment=testing mocha --reporter=dot --timeout=1350 test/\\*\\*/\\*.js",
+    "test:api": "environment=testing mocha --reporter=dot --timeout=1350 test/yadda/\\*\\*/\\*.js",
+    "test:backend": "environment=testing mocha --reporter=dot --timeout=1350 test/mocha/\\*\\*/\\*.js",
+    "test:coverage": "environment=testing istanbul cover _mocha test/\\*\\*/\\*.js",
+    "test:coverage-travis": "environment=testing istanbul cover _mocha --report lcovonly -- -R dot --timeout=1350 test/\\*\\*/\\*.js && cat ./coverage/lcov.info | codacy-coverage && rm -rf ./coverage",
+    "precommit": "npm run lint",
+    "commitmsg": "validate-commit-msg && validate-commit-email @resourceful-humans.com$"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ResourcefulHumans/rheactor-server.git"
+  },
+  "author": "Resourceful Humans <info@resourceful-humans.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ResourcefulHumans/rheactor-server/issues"
+  },
+  "homepage": "https://github.com/ResourcefulHumans/rheactor-server#readme",
+  "dependencies": {
+    "aws-sdk": "^2.6.4",
+    "bcrypt": "^1.0.0",
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "colors": "^1.1.2",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "fast-url-parser": "^1.1.3",
+    "glob": "^7.1.0",
+    "joi": "^10.0.0",
+    "jsonwebtoken": "^7.1.9",
+    "keypair": "^1.0.0",
+    "lodash": "^4.16.1",
+    "lwip": "0.0.9",
+    "multer": "^1.2.0",
+    "nconf": "^0.8.4",
+    "passport": "^0.3.2",
+    "passport-http-bearer": "^1.0.1",
+    "redis": "^2.6.2",
+    "request-promise": "^4.1.1",
+    "rheactor-build-views": "^3.0.0",
+    "rheactor-event-store": "^3.1.0",
+    "rheactor-value-objects": "^3.0.0",
+    "rheactor-web-app": "^2.8.1",
+    "rheactor-yadda-feature-runner": "^1.0.0",
+    "template-mailer-aws-lambda-client": "^2.0.0",
+    "transactional-emails": ">=1.15.0 <2.0.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "codacy-coverage": "^2.0.0",
+    "ghooks": "^1.3.2",
+    "istanbul": "^0.4.5",
+    "lolex": "^1.5.1",
+    "mocha": "^3.0.2",
+    "mocha-lcov-reporter": "^1.2.0",
+    "moment": "^2.15.1",
+    "semantic-release": "^6.3.2",
+    "standard": "^8.6.0",
+    "superagent": "^3.0.0",
+    "supertest": "^2.0.0",
+    "toposort": "^1.0.0",
+    "validate-commit-msg": "^2.8.0",
+    "yadda": "^0.22.0"
+  }
+}
