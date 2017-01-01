@@ -49,6 +49,9 @@ function doRequest (context, method, endpoint, next) {
       if (response && response.statusCode) {
         console.log('<', response.statusCode)
         if (response.statusCode >= 400) {
+          if (response.statusCode === 401) {
+            if (response.headers['www-authenticate']) console.log('<', 'www-authenticate:', response.headers['www-authenticate'])
+          }
           console.log(response.body)
         }
       }
