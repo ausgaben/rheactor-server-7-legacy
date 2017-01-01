@@ -1,5 +1,7 @@
 'use strict'
 
+/* global process */
+
 const Yadda = require('yadda')
 const English = Yadda.localisation.English
 const dictionary = new Yadda.Dictionary()
@@ -8,28 +10,41 @@ const moment = require('moment')
 const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
 const expect = require('chai').expect
 
-var clock
+let clock
+const setClock = time => {
+  if (clock) clock.uninstall()
+  clock = lolex.install(time)
+}
 module.exports = {
   library: English.library(dictionary)
     .given('we are $num days in the $direction', function (num, direction, next) {
       switch (direction) {
         case 'future':
-          clock = lolex.install(moment().add(num, 'days').valueOf())
+          setClock(moment().add(num, 'days').valueOf())
           break
         case 'past':
-          clock = lolex.install(moment().subtract(num, 'days').valueOf())
+          setClock(moment().subtract(num, 'days').valueOf())
           break
         default:
           throw new ValidationFailedError('Invalid direction: ' + direction)
       }
+      if (process.env.DEBUG_TIME) {
+        console.log('🕘', new Date())
+      }
       next()
     })
     .given('it is $weekday', function (weekday, next) {
-      clock = lolex.install(moment().day(weekday).valueOf())
+      setClock(moment().day(weekday).valueOf())
+      if (process.env.DEBUG_TIME) {
+        console.log('✓', '🕘', new Date())
+      }
       next()
     })
     .given('we are back to the present', function (next) {
-      clock.uninstall()
+      if (clock) clock.uninstall()
+      if (process.env.DEBUG_TIME) {
+        console.log('✕', '🕘', new Date())
+      }
       next()
     })
     .then('"$node" should be $num days in the $direction', function (node, num, direction, next) {
