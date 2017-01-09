@@ -47,7 +47,6 @@
     "rheactor-event-store": "^3.1.0",
     "rheactor-value-objects": "^3.0.0",
     "rheactor-web-app": "^2.8.1",
-    "rheactor-yadda-feature-runner": "^1.0.0",
     "template-mailer-aws-lambda-client": "^2.0.0",
     "transactional-emails": ">=1.15.0 <2.0.0"
   },
@@ -60,6 +59,7 @@
     "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.2.0",
     "moment": "^2.15.1",
+    "rheactor-yadda-feature-runner": "^1.0.0",
     "semantic-release": "^6.3.2",
     "standard": "^8.6.0",
     "superagent": "^3.3.1",
