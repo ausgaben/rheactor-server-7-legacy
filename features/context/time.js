@@ -2,13 +2,13 @@
 
 /* global process */
 
-const Yadda = require('yadda')
+import Yadda from 'yadda'
 const English = Yadda.localisation.English
 const dictionary = new Yadda.Dictionary()
-const lolex = require('lolex')
-const moment = require('moment')
-const ValidationFailedError = require('rheactor-value-objects/errors/validation-failed')
-const expect = require('chai').expect
+import lolex from 'lolex'
+import moment from 'moment'
+import {ValidationFailedError} from '@resourcefulhumans/rheactor-errors'
+import {expect} from 'chai'
 
 let clock
 const setClock = time => {

@@ -1,6 +1,6 @@
 'use strict'
 
-let _template = require('lodash/template')
+import _template from 'lodash/template'
 
 function storage (store, defaults, context, name, value) {
   if (!context[store]) {

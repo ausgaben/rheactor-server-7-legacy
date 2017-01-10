@@ -1,17 +1,18 @@
 'use strict'
 
-const Promise = require('bluebird')
+import Promise from 'bluebird'
+import {EntryAlreadyExistsError, EntryNotFoundError} from '@resourcefulhumans/rheactor-errors'
+import config from './config'
+
 Promise.longStackTraces()
-const EntryNotFoundError = require('rheactor-value-objects/errors/entry-not-found')
-const EntryAlreadyExistsError = require('rheactor-value-objects/errors/entry-already-exists')
-const config = require('./config')
+
 const webConfig = {
   baseHref: '/',
-  mimeType: 'application/vnd.resourceful-humans.rheactor.v1+json'
+  mimeType: 'application/vnd.resourceful-humans.rheactor.v2+json'
 }
 
 // Event listening
-const emitter = require('../services/emitter')
+import emitter from '../src/services/emitter'
 emitter.on('error', (err) => {
   if (EntryNotFoundError.is(err) || EntryAlreadyExistsError.is(err)) {
     return
@@ -20,19 +21,20 @@ emitter.on('error', (err) => {
 })
 
 // Persistence
-const RedisConnection = require('../services/redis-connection')
+import RedisConnection from '../src/services/redis-connection'
 const redis = new RedisConnection()
 redis.connect().then((client) => {
   client.on('error', function (err) {
     console.error(err)
   })
 })
-const UserRepository = require('../repository/user-repository')
+import {UserRepository} from '../src/repository/user-repository'
 const repositories = {
   user: new UserRepository(redis.client)
 }
 
-require('../services/keys')(config, redis.client)
+import keys from '../src/services/keys'
+keys(config, redis.client)
 
 // Create a mock TemplateMailer
 const templateMailer = {
@@ -42,13 +44,16 @@ const templateMailer = {
 }
 
 // Event handling
-require('../config/command-handler')(repositories, emitter, config, webConfig, templateMailer)
-require('../config/event-handler')(repositories, emitter, config)
+import CommandHandler from '../src/config/command-handler'
+import EventHandler from '../src/config/event-handler'
+
+CommandHandler(repositories, emitter, config, webConfig, templateMailer)
+EventHandler(repositories, emitter, config)
 
 // Password strength
 config.set('bcrypt_rounds', 1)
 
-module.exports = {
+export default {
   repositories,
   config,
   webConfig,

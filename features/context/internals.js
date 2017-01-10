@@ -1,13 +1,19 @@
 'use strict'
 
-const Yadda = require('yadda')
+import Yadda from 'yadda'
+import {changeEmailToken, accountActivationToken, lostPasswordToken} from '../../src/util/tokens'
+import {EmailValue, URIValue} from 'rheactor-value-objects'
+import utils from './util/storage'
+import GrantSuperUserPermissionsCommand from '../../src/command/user/grant-superuser-permissions'
+
 const English = Yadda.localisation.English
 const dictionary = new Yadda.Dictionary()
-const tokens = require('../../util/tokens')
-const EmailValue = require('rheactor-value-objects/email')
-const utils = require('./util/storage')
-const GrantSuperUserPermissionsCommand = require('../../command/user/grant-superuser-permissions')
 
+const tokens = {
+  lostPasswordToken,
+  changeEmailToken,
+  accountActivationToken
+}
 const getToken = (self, token, email, payload, storage, next) => {
   const context = self.ctx
   context.$app.repositories.user.getByEmail(new EmailValue(utils.template(email, utils.data(context))))
@@ -18,7 +24,7 @@ const getToken = (self, token, email, payload, storage, next) => {
         lifetime = -1
       }
       return tokens[token](
-        context.$app.config.get('api_host'),
+        new URIValue(context.$app.config.get('api_host')),
         context.$app.config.get('private_key'),
         lifetime,
         user,
@@ -45,6 +51,6 @@ module.exports = {
       const context = this.ctx
       const e = new EmailValue(utils.template(email, utils.data(context)))
       return context.$app.repositories.user.getByEmail(e)
-        .then(user => context.$app.emitter.emit(new GrantSuperUserPermissionsCommand(user)))
+        .then(user => context.$app.emitter.emit(new GrantSuperUserPermissionsCommand(user, user)))
     })
 }

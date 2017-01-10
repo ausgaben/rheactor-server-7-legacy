@@ -2,19 +2,19 @@
 
 /* global describe, it, before */
 
-let Promise = require('bluebird')
-let helper = require('../helper')
-let expect = require('chai').expect
-let UserCreateCommand = require('../../../command/user/create')
-let EmailValue = require('rheactor-value-objects/email')
-let UserModel = require('../../../model/user')
-const ModelEvent = require('rheactor-event-store/model-event')
+import Promise from 'bluebird'
+import helper from '../helper'
+import {expect} from 'chai'
+import UserCreateCommand from '../../../src/command/user/create'
+import {EmailValue} from 'rheactor-value-objects'
+import {UserModel} from '../../../src/model/user'
+import {ModelEvent} from 'rheactor-event-store'
+import emitter from '../../../src/services/emitter'
 
 describe('UserRepository', function () {
   before(helper.clearDb)
 
   let repository = helper.repositories.user
-  let emitter = require('../../../services/emitter')
 
   let findByEmailRetry = (email) => {
     return repository.findByEmail(email)

@@ -1,17 +1,18 @@
 'use strict'
 
-const _forIn = require('lodash/forIn')
-const _filter = require('lodash/filter')
-const _map = require('lodash/map')
-const _merge = require('lodash/merge')
-const _property = require('lodash/property')
-const expect = require('chai').expect
-const Yadda = require('yadda')
+import _forIn from 'lodash/forIn'
+import _filter from 'lodash/filter'
+import _map from 'lodash/map'
+import _merge from 'lodash/merge'
+import _property from 'lodash/property'
+import {expect} from 'chai'
+import Yadda from 'yadda'
+import request from 'supertest'
+import jwt from 'jsonwebtoken'
+import utils from './util/storage'
+
 const English = Yadda.localisation.English
 const dictionary = new Yadda.Dictionary()
-const request = require('supertest')
-const jwt = require('jsonwebtoken')
-const utils = require('./util/storage')
 
 dictionary
   .define('json', /([^\u0000]*)/, function (data, done) {
@@ -22,7 +23,7 @@ dictionary
   })
   .define('num', /(\d+)/, Yadda.converters.integer)
 
-const testHost = 'http://localhost:8080'
+const testHost = 'http://127.0.0.1:8080'
 
 function client (context) {
   if (!context.client) {
@@ -143,7 +144,7 @@ module.exports = {
     .when('I store the link to the list "$context" as "$storage"', function ($context, storage, next) {
       const context = this.ctx
       let matched = _filter(context.response.body.$links, (link) => {
-        return link.list && link.context === $context
+        return link.list && link.subject === $context
       })
       utils.data(context, storage, matched[0].href)
       next()
@@ -152,7 +153,7 @@ module.exports = {
     .when('I store the link to the list "$context" of the ([0-9]+)[a-z]+ item as "$storage"', function ($context, num, storage, next) {
       const context = this.ctx
       let matched = _filter(context.response.body.items[num - 1].$links, (link) => {
-        return link.list && link.context === $context
+        return link.list && link.subject === $context
       })
       utils.data(context, storage, matched[0].href)
       next()
@@ -170,7 +171,7 @@ module.exports = {
     .when('I store the link of "$relatedContext" as "$storage"', function (relatedContext, storage, next) {
       const context = this.ctx
       let matched = _filter(context.response.body.$links, (link) => {
-        return link.context === relatedContext
+        return link.subject === relatedContext
       })
       utils.data(context, storage, matched[0].href)
       next()
@@ -290,11 +291,18 @@ module.exports = {
       next()
     })
 
+    .then('"$node" should match $regexp', function (node, regexp, next) {
+      const context = this.ctx
+      const data = _property(node)(context.response.body)
+      expect(data).to.match(new RegExp(regexp))
+      next()
+    })
+
     .then(/a list of "([^"]+)" with ([0-9]+) of ([0-9]+) items? should be returned/, function (itemContext, num, total, next) {
       const context = this.ctx
       let list = context.response.body
       expect(context.response.statusCode).to.equal(200)
-      expect(list.$context).to.equal('https://github.com/RHeactor/nucleus/wiki/JsonLD#List')
+      expect(list.$context).to.equal('https://github.com/ResourcefulHumans/rheactor-models#List')
       expect(list.total).to.equal(+total)
       expect(list.items.length).to.equal(+num)
       _map(list.items, function (item) {
@@ -307,7 +315,7 @@ module.exports = {
       const context = this.ctx
       expect(context.response.statusCode).to.equal(200)
       let list = context.response.body
-      expect(list.$context).to.equal('https://github.com/RHeactor/nucleus/wiki/JsonLD#List')
+      expect(list.$context).to.equal('https://github.com/ResourcefulHumans/rheactor-models#List')
       _map(list.items, function (item) {
         expect(item.$context).to.equal(itemContext)
       })
@@ -423,7 +431,7 @@ module.exports = {
     // Debug stuff
     .then('I print the response', function (next) {
       const context = this.ctx
-      if (context.response.body.$context && context.response.body.$context === 'https://github.com/RHeactor/nucleus/wiki/JsonLD#List') {
+      if (context.response.body.$context && context.response.body.$context === 'https://github.com/ResourcefulHumans/rheactor-models#List') {
         console.log('List containing', context.response.body.items.length, 'of', context.response.body.total, 'items of', context.response.body.context)
         console.log('Links:')
         console.log(context.response.body.$links)

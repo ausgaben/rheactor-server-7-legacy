@@ -5,8 +5,8 @@ Feature: SuperUsers
 
   Background: Client defaults
 
-    Given "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8" is the Accept header
-    Given "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8" is the Content-Type header
+    Given "application/vnd.resourceful-humans.rheactor.v2+json; charset=utf-8" is the Accept header
+    Given "application/vnd.resourceful-humans.rheactor.v2+json; charset=utf-8" is the Content-Type header
 
   Scenario: Angela registers her account and is granted superuser rights
 
@@ -31,7 +31,7 @@ Feature: SuperUsers
     --------------
     When I POST to {loginEndpoint}
     Then the status code should be 201
-    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
+    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v2+json; charset=utf-8"
     And "$context" should equal "https://tools.ietf.org/html/rfc7519"
     And I store "token" as "angelasToken"
     And I parse JWT token into "angelasJwt"
@@ -54,8 +54,8 @@ Feature: SuperUsers
     # Fetch the user
     When I follow the redirect
     Then the status code should be 200
-    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
-    And "$context" should equal "https://github.com/RHeactor/nucleus/wiki/JsonLD#User"
+    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v2+json; charset=utf-8"
+    And "$context" should equal "https://github.com/ResourcefulHumans/rheactor-models#User"
     And "email" should equal "heiko.fischer-{time}@example.com"
     # Try login as new user
     Given the Authorization header is empty
@@ -84,8 +84,8 @@ Feature: SuperUsers
     Given "Bearer {angelasToken}" is the Authorization header
     When I POST to {userList}
     Then the status code should be 200
-    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
-    And a list of "https://github.com/RHeactor/nucleus/wiki/JsonLD#User" with 8 of 8 items should be returned
+    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v2+json; charset=utf-8"
+    And a list of "https://github.com/ResourcefulHumans/rheactor-models#User" with 8 of 8 items should be returned
 
   Scenario: can search users by email
 
@@ -96,8 +96,8 @@ Feature: SuperUsers
     --------------
     When I POST to {userList}
     Then the status code should be 200
-    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
-    And a list of "https://github.com/RHeactor/nucleus/wiki/JsonLD#User" with 1 of 1 item should be returned
+    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v2+json; charset=utf-8"
+    And a list of "https://github.com/ResourcefulHumans/rheactor-models#User" with 1 of 1 item should be returned
     And "firstname" of the 1st item should equal "Heiko"
     And "lastname" of the 1st item should equal "Fischer"
     And "email" of the 1st item should equal "heiko.fischer-{time}@example.com"
@@ -228,9 +228,9 @@ Feature: SuperUsers
     --------------
     When I PUT to {changeUserEmailEndpoint}
     Then the status code should be 409
-    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v1+json; charset=utf-8"
+    And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v2+json; charset=utf-8"
     And "$context" should equal "https://www.ietf.org/id/draft-ietf-appsawg-http-problem-01.txt"
-    And "detail" should equal "Email address already in use: superuser.activation-test-{time}@example.com"
+    And "detail" should equal "ConflictError: Email address already in use: superuser.activation-test-{time}@example.com"
 
   Scenario: can change the firstname and lastname of a user
 

@@ -1,10 +1,10 @@
 'use strict'
 
-let request = require('supertest')
-let Promise = require('bluebird')
+import request from 'supertest'
+import Promise from 'bluebird'
 Promise.promisifyAll(request)
 
-let backend = require('../backend')
+import backend from '../backend'
 
 exports.clearDb = function () {
   return backend.redis.client.flushdb()

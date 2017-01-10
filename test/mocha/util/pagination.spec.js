@@ -2,8 +2,8 @@
 
 /* global describe, it */
 
-let Pagination = require('../../../util/pagination')
-let expect = require('chai').expect
+import {Pagination} from '../../../src/util/pagination'
+import {expect} from 'chai'
 
 describe('Pagination()', function () {
   it('should have default values', (done) => {
