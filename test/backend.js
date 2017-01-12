@@ -21,7 +21,7 @@ emitter.on('error', (err) => {
 })
 
 // Persistence
-import RedisConnection from '../src/services/redis-connection'
+import {RedisConnection} from '../src/services/redis-connection'
 const redis = new RedisConnection()
 redis.connect().then((client) => {
   client.on('error', function (err) {

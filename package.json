@@ -1,6 +1,7 @@
 {
   "name": "rheactor-server",
   "description": "Core server components for RHeactor applications",
+  "version": "0.0.0-development",
   "scripts": {
     "lint": "standard",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
@@ -75,5 +76,11 @@
     "validate-commit-email": "^1.0.1",
     "validate-commit-msg": "^2.8.0",
     "yadda": "^0.22.0"
-  }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "main": "dist/index.js"
 }
