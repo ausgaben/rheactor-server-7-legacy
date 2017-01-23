@@ -1,4 +1,4 @@
-import CreateUserCommand from '../../../command/user/create'
+import {CreateUserCommand} from '../../../command/user/create'
 import {UserModel} from '../../../model/user'
 
 export default {

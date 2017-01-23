@@ -6,7 +6,7 @@ import {AggregateRootType} from 'rheactor-event-store'
  * @param {JSONLD} jsonld
  * @param {AggregateRoot} model
  */
-export default function transform (jsonld, model) {
+export function transform (jsonld, model) {
   JSONLDType(jsonld)
   AggregateRootType(model)
   switch (model.constructor.name) {

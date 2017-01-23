@@ -2,7 +2,7 @@ import Promise from 'bluebird'
 import ActivateUserCommand from '../../command/user/activate'
 import {isAccountActivationToken} from '../../util/tokens'
 import {AccessDeniedError} from '@resourcefulhumans/rheactor-errors'
-import checkVersion from '../check-version'
+import {checkVersion} from '../check-version'
 
 /**
  * Manages reset-password requests.

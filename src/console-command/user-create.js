@@ -1,10 +1,10 @@
-import CreateUserCommand from '../command/user/create'
+import {CreateUserCommand} from '../command/user/create'
 import {EmailValue} from 'rheactor-value-objects'
 import Promise from 'bluebird'
 import bcrypt from 'bcrypt'
 Promise.promisifyAll(bcrypt)
 
-export default {
+export const userCreateConsoleCommand = {
   arguments: '<email> <firstname> <lastname> <author>',
   description: 'creates a new new user',
   action: (backend, email, firstname, lastname, author) => backend

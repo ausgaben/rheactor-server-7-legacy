@@ -5,7 +5,7 @@
 import Promise from 'bluebird'
 import helper from '../helper'
 import {expect} from 'chai'
-import UserCreateCommand from '../../../src/command/user/create'
+import {CreateUserCommand} from '../../../src/command/user/create'
 import {EmailValue} from 'rheactor-value-objects'
 import {UserModel} from '../../../src/model/user'
 import {ModelEvent} from 'rheactor-event-store'
@@ -27,12 +27,12 @@ describe('UserRepository', function () {
   }
 
   describe('persist', () => {
-    it('should persist UserCreateCommands', (done) => {
+    it('should persist CreateUserCommands', (done) => {
       let email1 = new EmailValue('john.doe@example.invalid')
       let email2 = new EmailValue('jane.doe@example.invalid')
 
-      let c1 = new UserCreateCommand(email1, 'John', 'Doe', '$2a$04$If4tCFhzOBCiKuOYX3gSje918gyr4XN73BFtSpuJAFZjUE.5NR3PS')
-      let c2 = new UserCreateCommand(email2, 'Jane', 'Doe', '$2a$04$If4tCFhzOBCiKuOYX3gSje918gyr4XN73BFtSpuJAFZjUE.5NR3PS')
+      let c1 = new CreateUserCommand(email1, 'John', 'Doe', '$2a$04$If4tCFhzOBCiKuOYX3gSje918gyr4XN73BFtSpuJAFZjUE.5NR3PS')
+      let c2 = new CreateUserCommand(email2, 'Jane', 'Doe', '$2a$04$If4tCFhzOBCiKuOYX3gSje918gyr4XN73BFtSpuJAFZjUE.5NR3PS')
 
       Promise.join(emitter.emit(c1), emitter.emit(c2))
         .spread((e1, e2) => {
@@ -56,8 +56,8 @@ describe('UserRepository', function () {
     it('should not persist two users with the same email address', (done) => {
       let email = new EmailValue('jill.doe@example.invalid')
 
-      let c1 = new UserCreateCommand(email, 'Jill', 'Doe', '$2a$04$If4tCFhzOBCiKuOYX3gSje918gyr4XN73BFtSpuJAFZjUE.5NR3PS')
-      let c2 = new UserCreateCommand(email, 'Another Jill', 'Doe', '$2a$04$If4tCFhzOBCiKuOYX3gSje918gyr4XN73BFtSpuJAFZjUE.5NR3PS')
+      let c1 = new CreateUserCommand(email, 'Jill', 'Doe', '$2a$04$If4tCFhzOBCiKuOYX3gSje918gyr4XN73BFtSpuJAFZjUE.5NR3PS')
+      let c2 = new CreateUserCommand(email, 'Another Jill', 'Doe', '$2a$04$If4tCFhzOBCiKuOYX3gSje918gyr4XN73BFtSpuJAFZjUE.5NR3PS')
 
       emitter.emit(c1)
       emitter

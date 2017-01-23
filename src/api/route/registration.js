@@ -1,6 +1,6 @@
 import Promise from 'bluebird'
 import {EmailValue} from 'rheactor-value-objects'
-import CreateUserCommand from '../../command/user/create'
+import {CreateUserCommand} from '../../command/user/create'
 import {ValidationFailedError, ConflictError} from '@resourcefulhumans/rheactor-errors'
 import bcrypt from 'bcrypt'
 Promise.promisifyAll(bcrypt)

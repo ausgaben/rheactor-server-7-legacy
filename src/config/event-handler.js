@@ -1,4 +1,4 @@
-import EmittedEventsHandlerRegistry from '../services/emitted-events-handler-registry'
+import {EmittedEventsHandlerRegistry} from '../services/emitted-events-handler-registry'
 import {URIValue} from 'rheactor-value-objects'
 import SendEmailConfirmationEventHandler from '../event-handler/send-email-confirmation'
 import NotifySlackAboutNewUsersEventHandler from '../event-handler/notify-slack-about-new-users'
@@ -8,7 +8,7 @@ import NotifySlackAboutNewUsersEventHandler from '../event-handler/notify-slack-
  * @param {BackendEmitter} emitter
  * @param {nconf} config
  */
-export default (repos, emitter, config) => {
+export function rheactorEventHandler (repos, emitter, config) {
   let c = new EmittedEventsHandlerRegistry(emitter)
   SendEmailConfirmationEventHandler(repos.user)(c)
   let slackWebhook = config.get('slack:webhook')

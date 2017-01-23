@@ -6,7 +6,7 @@ import {isLostPasswordToken} from '../../util/tokens'
 import bcrypt from 'bcrypt'
 import {ValidationFailedError, AccessDeniedError} from '@resourcefulhumans/rheactor-errors'
 import Joi from 'joi'
-import checkVersion from '../check-version'
+import {checkVersion} from '../check-version'
 Promise.promisifyAll(bcrypt)
 
 /**

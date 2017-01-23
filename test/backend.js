@@ -44,11 +44,11 @@ const templateMailer = {
 }
 
 // Event handling
-import CommandHandler from '../src/config/command-handler'
-import EventHandler from '../src/config/event-handler'
+import {rheactorCommandHandler} from '../src/config/command-handler'
+import {rheactorEventHandler} from '../src/config/event-handler'
 
-CommandHandler(repositories, emitter, config, webConfig, templateMailer)
-EventHandler(repositories, emitter, config)
+rheactorCommandHandler(repositories, emitter, config, webConfig, templateMailer)
+rheactorEventHandler(repositories, emitter, config)
 
 // Password strength
 config.set('bcrypt_rounds', 1)

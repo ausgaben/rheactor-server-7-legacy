@@ -1,4 +1,4 @@
-import EmittedEventsHandlerRegistry from '../services/emitted-events-handler-registry'
+import {EmittedEventsHandlerRegistry} from '../services/emitted-events-handler-registry'
 
 import UserActivateCommandHandler from '../command-handler/repository/user/activate'
 import CreateCommandHandler from '../command-handler/repository/user/create'
@@ -21,7 +21,7 @@ import UserSendEmailChangeConfirmationLinkHandler from '../command-handler/user-
  * @param {object} webConfig
  * @param {TemplateMailerClient} templateMailerClient
  */
-export default (repos, emitter, config, webConfig, templateMailerClient) => {
+export function rheactorCommandHandler (repos, emitter, config, webConfig, templateMailerClient) {
   const c = new EmittedEventsHandlerRegistry(emitter)
 
   const registerHandler = (handler) => {

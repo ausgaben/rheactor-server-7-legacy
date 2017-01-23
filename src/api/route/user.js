@@ -1,5 +1,5 @@
 import Promise from 'bluebird'
-import CreateUserCommand from '../../command/user/create'
+import {CreateUserCommand} from '../../command/user/create'
 import {ValidationFailedError} from '@resourcefulhumans/rheactor-errors'
 import Joi from 'joi'
 import _merge from 'lodash/merge'

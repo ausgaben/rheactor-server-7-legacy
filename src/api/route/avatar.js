@@ -3,7 +3,7 @@ import multer from 'multer'
 import UpdateUserAvatarCommand from '../../command/user/update-avatar'
 import {URIValue} from 'rheactor-value-objects'
 import {ValidationFailedError} from '@resourcefulhumans/rheactor-errors'
-import AvatarStore from '../../services/avatar-store'
+import {AvatarStore} from '../../services/avatar-store'
 
 /**
  * @param {express.app} app

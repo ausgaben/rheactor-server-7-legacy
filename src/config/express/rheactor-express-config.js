@@ -3,7 +3,7 @@ import {Strategy as BearerStrategy} from 'passport-http-bearer'
 import tokenBearerStrategy from './token-bearer-strategy'
 import JSONLD from '../jsonld'
 import {verify} from '../../util/tokens'
-import transform from '../../api/transformer'
+import {transform} from '../../api/transformer'
 import rheactorExpressBaseConfig from './base'
 import {URIValue} from 'rheactor-value-objects'
 import indexRoute from '../../api/route/index'
@@ -26,7 +26,7 @@ import avatarRoute from '../../api/route/avatar'
  * @param {function} transformer
  * @param {JSONLD} jsonld
  */
-export default (app, config, webConfig, repositories, emitter, transformer = transform, jsonld = undefined) => {
+export function rheactorExpressConfig (app, config, webConfig, repositories, emitter, transformer = transform, jsonld = undefined) {
   const apiHost = new URIValue(config.get('api_host'))
   if (!jsonld) {
     jsonld = JSONLD(apiHost)

@@ -1,7 +1,7 @@
 'use strict'
 
 import backend from './backend'
-import expressConfig from '../src/config/express'
+import {rheactorExpressConfig} from '../src/config/express/rheactor-express-config'
 const config = backend.config
 const webConfig = backend.webConfig
 const redis = backend.redis.client
@@ -12,7 +12,7 @@ const emitter = backend.emitter
 import express from 'express'
 const app = express()
 app.set('env', 'test') // Suppress errors logged from express.js
-expressConfig(app, config, webConfig, repositories, emitter)
+rheactorExpressConfig(app, config, webConfig, repositories, emitter)
 const port = config.get('port')
 const host = config.get('host')
 app.listen(port, host)
