@@ -1,8 +1,9 @@
 import {Link, LinkType, Index} from 'rheactor-models'
 import {URIValue, URIValueType} from 'rheactor-value-objects'
 import {dict, String as StringType, irreducible} from 'tcomb'
+import {AggregateIdType} from 'rheactor-event-store'
 
-const IdMapType = dict(StringType, StringType)
+const IdMapType = dict(StringType, AggregateIdType)
 
 export class JSONLD {
   constructor () {
@@ -47,7 +48,7 @@ export class JSONLD {
    */
   createId ($context, id) {
     URIValueType($context)
-    StringType(id)
+    AggregateIdType(id)
     return new URIValue(this.typeMap[$context.toString()].replace(':id', id))
   }
 
@@ -73,7 +74,7 @@ export class JSONLD {
     }
     URIValueType($context)
     IdMapType(idMap)
-    return this.typeLinks[$context.toString()].map(link => {
+    return (this.typeLinks[$context.toString()] || []).map(link => {
       let href = link.href.toString()
       for (let k in idMap) {
         href = href.replace(':' + k, idMap[k])
