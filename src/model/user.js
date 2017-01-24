@@ -253,7 +253,7 @@ export class UserModel extends AggregateRoot {
    * @returns {boolean}
    */
   static is (x) {
-    return (x instanceof UserModel) || (x && x.constructor && x.constructor.name === UserModel.name && 'email' in x && 'firstname' in x && 'lastname' in x && 'password' in x && 'isActive' in x && 'activatedAt' in x && 'avatar' in x && 'superUser' in x)
+    return (x instanceof UserModel) || (x && x.constructor && x.constructor.name === UserModel.name && 'email' in x && 'firstname' in x && 'lastname' in x && 'password' in x && 'isActive' in x)
   }
 }
 
