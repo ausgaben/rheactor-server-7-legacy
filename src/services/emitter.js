@@ -8,7 +8,7 @@ export class BackendEmitter extends EventEmitter {
     if (typeof cmdOrEvent === 'object' && cmdOrEvent.constructor) {
       return _snakeCase(cmdOrEvent.constructor.name)
     }
-    return _snakeCase(cmdOrEvent.name)
+    return _snakeCase(cmdOrEvent.name || cmdOrEvent)
   }
 
   emit (cmd) {
