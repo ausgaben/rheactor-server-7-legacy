@@ -49,7 +49,7 @@ function doRequest (context, method, endpoint, next) {
     if (process.env.DEBUG_REST) {
       if (response && response.statusCode) {
         console.log('<', response.statusCode)
-        if (response.statusCode >= 400) {
+        if (response.statusCode >= 400 || process.env.DEBUG_RESPONSE) {
           if (response.statusCode === 401) {
             if (response.headers['www-authenticate']) console.log('<', 'www-authenticate:', response.headers['www-authenticate'])
           }
