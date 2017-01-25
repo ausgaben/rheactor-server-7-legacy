@@ -1,10 +1,12 @@
 import {EventEmitter} from 'events'
 import _snakeCase from 'lodash/snakeCase'
 import Promise from 'bluebird'
+import {ModelEvent} from 'rheactor-event-store'
 
 export class BackendEmitter extends EventEmitter {
 
   toEventName (cmdOrEvent) {
+    if (ModelEvent.is(cmdOrEvent)) return _snakeCase(cmdOrEvent.name)
     if (typeof cmdOrEvent === 'object' && cmdOrEvent.constructor) {
       return _snakeCase(cmdOrEvent.constructor.name)
     }
