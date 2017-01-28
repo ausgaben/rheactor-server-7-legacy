@@ -1,6 +1,7 @@
 import {User} from 'rheactor-models'
 import {JSONLDType} from './jsonld'
 import {AggregateRootType} from 'rheactor-event-store'
+import {UserModelType} from '../model/user'
 
 /**
  * @param {JSONLD} jsonld
@@ -11,19 +12,25 @@ export function transform (jsonld, model) {
   AggregateRootType(model)
   switch (model.constructor.name) {
     case 'UserModel':
-      return new User({
-        $id: jsonld.createId(User.$context, model.aggregateId()).toString(),
-        $version: model.aggregateVersion(),
-        $links: jsonld.createLinks(User.$context, model.aggregateId()),
-        $createdAt: model.createdAt(),
-        $updatedAt: model.updatedAt(),
-        $deletedAt: model.deletedAt(),
-        firstname: model.firstname,
-        lastname: model.lastname,
-        email: model.email,
-        avatar: model.avatar ? model.avatar : undefined,
-        superUser: model.superUser,
-        active: model.isActive
-      })
+      return userTransformer(model, jsonld)
   }
+}
+
+export const userTransformer = (user, jsonld) => {
+  UserModelType(user)
+  JSONLDType(jsonld)
+  return new User({
+    $id: jsonld.createId(User.$context, user.aggregateId()).toString(),
+    $version: user.aggregateVersion(),
+    $links: jsonld.createLinks(User.$context, user.aggregateId()),
+    $createdAt: user.createdAt(),
+    $updatedAt: user.updatedAt(),
+    $deletedAt: user.deletedAt(),
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    avatar: user.avatar ? user.avatar : undefined,
+    superUser: user.superUser,
+    active: user.isActive
+  })
 }
