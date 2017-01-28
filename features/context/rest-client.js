@@ -186,6 +186,19 @@ module.exports = {
       next()
     })
 
+    // And "user" of the 1st item should reference the "https://github.com/ResourcefulHumans/rheactor-models#User" with $id "{jwt.sub}"
+    .then(/"([^"]+)" of the ([0-9]+)[a-z]+ item should reference the "([^"]+)" with id "([^"]+)"/, function (node, num, subject, $id, next) {
+      const context = this.ctx
+      const item = context.response.body.items[num - 1]
+      const data = _property(node)(item)
+      expect(data.$context).to.equal('https://github.com/ResourcefulHumans/rheactor-models#Reference')
+      subject = utils.template(subject, utils.data(context))
+      $id = utils.template($id, utils.data(context))
+      expect(data.subject).to.equal(subject)
+      expect(data.$id).to.equal($id)
+      next()
+    })
+
     .when('I store the $header header as "$storage"', function (header, storage, next) {
       const context = this.ctx
       utils.data(context, storage, context.response.header[header.toLowerCase()])
