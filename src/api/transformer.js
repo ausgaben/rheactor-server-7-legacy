@@ -20,7 +20,7 @@ export const userTransformer = (user, jsonld) => {
   UserModelType(user)
   JSONLDType(jsonld)
   return new User({
-    $id: jsonld.createId(User.$context, user.aggregateId()).toString(),
+    $id: jsonld.createId(User.$context, user.aggregateId()),
     $version: user.aggregateVersion(),
     $links: jsonld.createLinks(User.$context, user.aggregateId()),
     $createdAt: user.createdAt(),
