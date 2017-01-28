@@ -1,6 +1,14 @@
 import Promise from 'bluebird'
 import {HttpProblem} from 'rheactor-models'
-import {AccessDeniedError, EntryNotFoundError, ConflictError, EntryAlreadyExistsError, ValidationFailedError, EntryDeletedError, PaymentRequiredError} from '@resourcefulhumans/rheactor-errors'
+import {
+  AccessDeniedError,
+  EntryNotFoundError,
+  ConflictError,
+  EntryAlreadyExistsError,
+  ValidationFailedError,
+  EntryDeletedError,
+  PaymentRequiredError
+} from '@resourcefulhumans/rheactor-errors'
 import {URIValue} from 'rheactor-value-objects'
 
 export const HttpProblemFromException = (exception, status) => {
@@ -40,6 +48,10 @@ export const sendHttpProblem = (environment, res, err) => {
   }
   if (err.name === PaymentRequiredError.name) {
     status = 402
+  }
+  if (err.name === 'TypeError' && /^\[tcomb] /.test(err.message)) {
+    status = 400
+    err = new ValidationFailedError(err.message, {}, err)
   }
   if (status === 500) { // Unknown
     console.error(err.name)
