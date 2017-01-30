@@ -2,6 +2,7 @@ import TemplateMailerClient from 'template-mailer-aws-lambda-client'
 import emails from 'transactional-emails'
 
 export default {
+  name: 'send-testmail',
   arguments: '<template> <to> <name>',
   description: 'Send a testmail',
   action: (backend, template, to, name) => {

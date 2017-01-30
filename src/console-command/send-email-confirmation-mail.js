@@ -1,6 +1,7 @@
 import ConfirmUserEmailCommand from '../command/user/confirm-email'
 
 export default {
+  name: 'send-email-confirmation-mail',
   arguments: '<email>',
   description: 'Send the email confirmation mail to the user with the email <email>',
   action: (backend, email) => {

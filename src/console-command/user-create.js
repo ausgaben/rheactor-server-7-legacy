@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 Promise.promisifyAll(bcrypt)
 
 export const userCreateConsoleCommand = {
+  name: 'user-create',
   arguments: '<email> <firstname> <lastname> <author>',
   description: 'creates a new new user',
   action: (backend, email, firstname, lastname, author) => backend

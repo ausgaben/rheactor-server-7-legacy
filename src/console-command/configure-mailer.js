@@ -3,6 +3,7 @@ import TemplateMailerClient from 'template-mailer-aws-lambda-client'
 import emails from 'transactional-emails'
 
 export default {
+  name: 'configure-mailer',
   description: 'Configure the template mailer',
   action: (backend) => {
     let mailerConfig = backend.config.get('template_mailer')

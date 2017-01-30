@@ -1,6 +1,7 @@
 import SendUserPasswordChangeConfirmationLinkCommand from '../command/user/send-password-change-confirmation-link'
 
 export default {
+  name: 'send-lost-password-mail',
   arguments: '<email>',
   description: 'Send the lost password email to the user with the email <email>',
   action: (backend, email) => {

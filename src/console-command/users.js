@@ -1,6 +1,7 @@
 import colors from 'colors'
 
 export default {
+  name: 'users',
   description: 'list all users',
   action: (backend) => {
     return backend.repositories.user.findAll()

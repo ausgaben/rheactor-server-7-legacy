@@ -8,6 +8,7 @@ import {URIValue, EmailValue} from 'rheactor-value-objects'
 import Promise from 'bluebird'
 
 export default {
+  name: 'user-update',
   arguments: '<email> <author>',
   description: 'Update user properties',
   options: [
