@@ -1,10 +1,10 @@
 'use strict'
 
 import Yadda from 'yadda'
-import {changeEmailToken, accountActivationToken, lostPasswordToken} from '../../src/util/tokens'
+import {changeEmailToken, accountActivationToken, lostPasswordToken} from '../util/tokens'
 import {EmailValue, URIValue} from 'rheactor-value-objects'
 import {utils} from './util/storage'
-import GrantSuperUserPermissionsCommand from '../../src/command/user/grant-superuser-permissions'
+import GrantSuperUserPermissionsCommand from '../command/user/grant-superuser-permissions'
 
 const English = Yadda.localisation.English
 const dictionary = new Yadda.Dictionary()

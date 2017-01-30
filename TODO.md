@@ -11,7 +11,3 @@
 
 - The relations do not contain the information about the appropriate 
   method. Look into hydra.
-
-## Testing
-
-- The yadda context implementations should be extracted into a separate package
