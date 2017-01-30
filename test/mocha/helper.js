@@ -1,5 +1,3 @@
-'use strict'
-
 import request from 'supertest'
 import Promise from 'bluebird'
 Promise.promisifyAll(request)

@@ -3,7 +3,7 @@
 import Yadda from 'yadda'
 import {changeEmailToken, accountActivationToken, lostPasswordToken} from '../../src/util/tokens'
 import {EmailValue, URIValue} from 'rheactor-value-objects'
-import utils from './util/storage'
+import {utils} from './util/storage'
 import GrantSuperUserPermissionsCommand from '../../src/command/user/grant-superuser-permissions'
 
 const English = Yadda.localisation.English
@@ -37,7 +37,7 @@ const getToken = (self, token, email, payload, storage, next) => {
     })
 }
 
-module.exports = {
+export const InternalContext = {
   library: English.library(dictionary)
     .given('I have the $token for "$email" in "$storage"', function (token, email, storage, next) {
       return getToken(this, token, email, {}, storage, next)

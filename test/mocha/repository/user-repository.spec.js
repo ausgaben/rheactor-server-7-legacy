@@ -1,5 +1,3 @@
-'use strict'
-
 /* global describe, it, before */
 
 import Promise from 'bluebird'

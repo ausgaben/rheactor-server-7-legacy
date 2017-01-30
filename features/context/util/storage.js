@@ -15,7 +15,7 @@ function storage (store, defaults, context, name, value) {
   context[store][name] = value
 }
 
-module.exports = {
+export const utils = {
   template: (str, data) => {
     return _template(str, {interpolate: /\{([\s\S]+?)\}/g})(data)
   },

@@ -15,7 +15,8 @@ const setClock = time => {
   if (clock) clock.uninstall()
   clock = lolex.install(time)
 }
-module.exports = {
+
+export const TimeContext = {
   library: English.library(dictionary)
     .given('we are $num days in the $direction', function (num, direction, next) {
       switch (direction) {

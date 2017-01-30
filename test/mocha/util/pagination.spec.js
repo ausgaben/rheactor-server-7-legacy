@@ -1,5 +1,3 @@
-'use strict'
-
 /* global describe, it */
 
 import {Pagination} from '../../../src/util/pagination'

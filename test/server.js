@@ -1,5 +1,3 @@
-'use strict'
-
 import backend from './backend'
 import {rheactorExpressConfig} from '../src/config/express/rheactor-express-config'
 const config = backend.config

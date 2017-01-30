@@ -46,9 +46,9 @@
     "passport-http-bearer": "^1.0.1",
     "redis": "^2.6.5",
     "request-promise": "^4.1.1",
-    "rheactor-event-store": "^9.x",
+    "rheactor-event-store": "9.x",
     "rheactor-models": "3.x",
-    "rheactor-value-objects": "^8.x",
+    "rheactor-value-objects": "9.x",
     "tcomb": "^3.2.16",
     "template-mailer-aws-lambda-client": "^2.x",
     "transactional-emails": ">=1.15.0 <2.0.0"
@@ -64,7 +64,7 @@
     "lolex": "^1.5.1",
     "mocha": "^3.0.2",
     "nyc": "^10.1.2",
-    "rheactor-yadda-feature-runner": "^1.0.0",
+    "rheactor-yadda-feature-runner": "2.x",
     "semantic-release": "^6.3.2",
     "standard": "^8.6.0",
     "superagent": "^3.4.1",
@@ -76,6 +76,7 @@
   "files": [
     "dist",
     "src",
+    "features",
     "README.md"
   ],
   "main": "dist/index.js"

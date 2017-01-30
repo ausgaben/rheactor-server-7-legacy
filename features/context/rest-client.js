@@ -9,7 +9,7 @@ import {expect} from 'chai'
 import Yadda from 'yadda'
 import request from 'supertest'
 import jwt from 'jsonwebtoken'
-import utils from './util/storage'
+import {utils} from './util/storage'
 
 const English = Yadda.localisation.English
 const dictionary = new Yadda.Dictionary()
@@ -86,7 +86,7 @@ function checkJwtProperty (context, type, value, next) {
   next()
 }
 
-module.exports = {
+export const RestClientContext = {
   beforeScenario: (context) => {
     context.body = undefined
     context.header = {}
