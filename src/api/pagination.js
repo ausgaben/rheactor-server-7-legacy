@@ -65,7 +65,8 @@ export const sendPaginatedListResponse = (apiHost, req, res, itemTransformer, re
         models,
         result.total,
         result.itemsPerPage,
-        createPaginationLinks(result, new URIValue(searchUrl))
+        createPaginationLinks(result, new URIValue(searchUrl)),
+        result.offset
       )
       return res.send(list)
     })
