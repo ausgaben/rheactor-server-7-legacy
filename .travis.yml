@@ -22,8 +22,8 @@ install:
   - npm-install-peers
 script:
   - npm run lint
-  - npm run test:coverage-travis
   - make dist
+  - npm run test:coverage-travis
 after_success:
   - npm run semantic-release
 branches:
