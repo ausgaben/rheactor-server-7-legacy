@@ -2,9 +2,9 @@ import path from 'path'
 import glob from 'glob'
 import app from '../server'
 import runner from 'rheactor-yadda-feature-runner'
-import {InternalContext} from '../../src/bdd-contexts/internals'
-import {RestClientContext} from '../../src/bdd-contexts/rest-client'
-import {TimeContext} from '../../src/bdd-contexts/time'
+import {InternalContext} from './bdd-contexts/internals'
+import {RestClientContext} from './bdd-contexts/rest-client'
+import {TimeContext} from './bdd-contexts/time'
 
 app.redis.flushdb()
 

@@ -77,6 +77,7 @@
   },
   "files": [
     "dist",
+    "test-dist",
     "src",
     "features",
     "README.md"
