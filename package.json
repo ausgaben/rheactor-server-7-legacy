@@ -49,6 +49,7 @@
     "lodash": "^4.16.1",
     "moment": "^2.15.1",
     "nconf": "^0.8.4",
+    "request": "^2.79.0",
     "request-promise": "^4.1.1",
     "rheactor-event-store": "9.x",
     "rheactor-models": "3.x >=3.2.1",
