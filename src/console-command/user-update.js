@@ -2,7 +2,7 @@ import UpdateUserAvatarCommand from '../command/user/update-avatar'
 import ChangeUserEmailCommand from '../command/user/email-change'
 import DeactivateUserCommand from '../command/user/deactivate'
 import ActivateUserCommand from '../command/user/activate'
-import GrantSuperUserPermissionCommand from '../command/user/grant-superuser-permissions'
+import {GrantSuperUserPermissionsCommand} from '../command/user/grant-superuser-permissions'
 import RevokeSuperUserPermissionCommand from '../command/user/revoke-superuser-permissions'
 import {URIValue, EmailValue} from 'rheactor-value-objects'
 import Promise from 'bluebird'
@@ -39,7 +39,7 @@ export default {
         p.push(backend.emitter.emit(new ActivateUserCommand(user, author)))
       }
       if (options.superuser) {
-        p.push(backend.emitter.emit(new GrantSuperUserPermissionCommand(user, author)))
+        p.push(backend.emitter.emit(new GrantSuperUserPermissionsCommand(user, author)))
       }
       if (options.nosuperuser) {
         p.push(backend.emitter.emit(new RevokeSuperUserPermissionCommand(user, author)))

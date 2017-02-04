@@ -4,4 +4,3 @@
 /dist
 /.nyc_output
 /instrumented-src
-/test-dist

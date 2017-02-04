@@ -1,10 +1,10 @@
-import GrantSuperUserPermissionCommand from '../../../command/user/grant-superuser-permissions'
+import {GrantSuperUserPermissionsCommand} from '../../../command/user/grant-superuser-permissions'
 
 export default {
-  command: GrantSuperUserPermissionCommand,
+  command: GrantSuperUserPermissionsCommand,
   /**
    * @param {UserRepository} repository
-   * @param {GrantSuperUserPermissionCommand} cmd
+   * @param {GrantSuperUserPermissionsCommand} cmd
    * @return {ModelEvent}
    */
   handler: (repository, cmd) => repository.persistEvent(cmd.user.grantSuperUserPermissions(cmd.author))

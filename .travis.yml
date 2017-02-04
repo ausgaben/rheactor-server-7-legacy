@@ -21,6 +21,7 @@ install:
   - npm install
   - npm prune
   - npm-install-peers
+  - cd node_modules; ln -s ../ rheactor-server; cd ..
 script:
   - npm run lint
   - make dist
