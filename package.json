@@ -38,7 +38,7 @@
     "transactional-emails": ">=1.15.0 <2.0.0"
   },
   "peerDependencies": {
-    "@resourcefulhumans/rheactor-bdd-contexts": "1.x",
+    "@resourcefulhumans/rheactor-bdd-contexts": "1.x >=1.0.2",
     "@resourcefulhumans/rheactor-errors": "1.x",
     "aws-sdk": "^2.9.0",
     "bluebird": "^3.4.6",
