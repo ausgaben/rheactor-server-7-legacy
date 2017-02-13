@@ -22,6 +22,8 @@ export default (config, webConfig, app) => {
       'connection',
       'content-length',
       'content-type',
+      'last-modified',
+      'etag',
       'location',
       'x-made-by',
       'x-github',
