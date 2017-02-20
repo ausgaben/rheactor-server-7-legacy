@@ -9,8 +9,8 @@ import {PositiveIntegerType} from '../util/pagination'
  */
 export function checkVersion (theirVersion, model) {
   theirVersion = +theirVersion
-  PositiveIntegerType(theirVersion)
-  AggregateRootType(model)
+  PositiveIntegerType(theirVersion, ['checkVersion()', 'theirVersion:Integer > 0'])
+  AggregateRootType(model, ['checkVersion()', 'model:AggregateRoot'])
   let ourVersion = model.aggregateVersion()
   if (theirVersion !== ourVersion) {
     throw new ConflictError(model.constructor.name + ' "' + model.aggregateId() + '" has been modified. ' +
