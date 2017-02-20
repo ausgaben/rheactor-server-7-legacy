@@ -18,8 +18,8 @@ export class JSONLD {
    * @param {URIValue} uri
    */
   mapType ($context, uri) {
-    URIValueType($context)
-    URIValueType(uri)
+    URIValueType($context, ['JSONLD', 'mapType()', '$context:URIValue'])
+    URIValueType(uri, ['JSONLD', 'mapType()', 'uri:URIValue'])
     this.typeMap[$context.toString()] = uri.toString()
   }
 
@@ -28,8 +28,8 @@ export class JSONLD {
    * @param {Link} link
    */
   addLink (type, link) {
-    URIValueType(type)
-    LinkType(link)
+    URIValueType(type, ['JSONLD', 'addLink()', 'type:URIValue'])
+    LinkType(link, ['JSONLD', 'addLink()', 'link:Link'])
     if (!this.typeLinks[type]) {
       this.typeLinks[type.toString()] = []
     }
@@ -47,8 +47,8 @@ export class JSONLD {
    * @returns {URIValue}
    */
   createId ($context, id) {
-    URIValueType($context)
-    AggregateIdType(id)
+    URIValueType($context, ['JSONLD', 'createId()', '$context:URIValue'])
+    AggregateIdType(id, ['JSONLD', 'createId()', 'id:AggregateId'])
     return new URIValue(this.typeMap[$context.toString()].replace(':id', id))
   }
 
@@ -58,8 +58,8 @@ export class JSONLD {
    * @return String
    */
   parseId ($context, $id) {
-    URIValueType($context)
-    URIValueType($id)
+    URIValueType($context, ['JSONLD', 'parseId()', '$context:URIValue'])
+    URIValueType($id, ['JSONLD', 'parseId()', '$id:URIValue'])
     return $id.toString().match(new RegExp(this.typeMap[$context.toString()].replace(':id', '([0-9]+)')))[1]
   }
 
@@ -72,8 +72,8 @@ export class JSONLD {
     if (typeof idMap !== 'object') {
       idMap = {id: idMap}
     }
-    URIValueType($context)
-    IdMapType(idMap)
+    URIValueType($context, ['JSONLD', 'createLinks()', '$context:URIValue'])
+    IdMapType(idMap, ['JSONLD', 'createLinks()', 'idMap:Map<String: AggregateId>'])
     return (this.typeLinks[$context.toString()] || []).map(link => {
       let href = link.href.toString()
       for (let k in idMap) {
@@ -97,7 +97,7 @@ export class JSONLD {
    * @returns {String}
    */
   encodeId (id) {
-    URIValueType(id)
+    URIValueType(id, ['JSONLD', 'encodeId()', 'id:URIValue'])
     return new Buffer(encodeURI(encodeURIComponent(id.toString())), 'binary').toString('base64')
   }
 
