@@ -1,4 +1,4 @@
-import {ConflictError} from '@resourcefulhumans/rheactor-errors'
+import {ValidationFailedError, ConflictError} from '@resourcefulhumans/rheactor-errors'
 import {AggregateRootType} from 'rheactor-event-store'
 import {PositiveIntegerType} from '../util/pagination'
 
@@ -9,6 +9,7 @@ import {PositiveIntegerType} from '../util/pagination'
  */
 export function checkVersion (theirVersion, model) {
   theirVersion = +theirVersion
+  if (theirVersion <= 0) throw new ValidationFailedError('No version provided.')
   PositiveIntegerType(theirVersion, ['checkVersion()', 'theirVersion:Integer > 0'])
   AggregateRootType(model, ['checkVersion()', 'model:AggregateRoot'])
   let ourVersion = model.aggregateVersion()
