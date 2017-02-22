@@ -20,7 +20,7 @@ export const rheactorExpressBaseConfig = (environment, mimeType, app) => {
   app.use(bodyParser.json({type: mimeType}))
 
   app.use(cors({
-    origin: config.get('web_host'),
+    origin: true, // Use request origin
     exposedHeaders: [
       'cache-control',
       'connection',
