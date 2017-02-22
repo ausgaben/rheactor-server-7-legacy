@@ -48,6 +48,9 @@ describe('jsonld', function () {
         'task_id': '17'
       })
     })
+    it('should throw an error if $id does not match the pattern', () => {
+      expect(() => jsonld.parseIds(UserTaskContext, new URIValue('http://foo.com/'))).to.throw(/ValidationFailedError/)
+    })
   })
 
   describe('.createLinks()', () => {

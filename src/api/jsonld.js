@@ -2,6 +2,7 @@ import {Link, LinkType, Index} from 'rheactor-models'
 import {URIValue, URIValueType} from 'rheactor-value-objects'
 import {dict, String as StringType, irreducible} from 'tcomb'
 import {AggregateIdType} from 'rheactor-event-store'
+import {ValidationFailedError} from '@resourcefulhumans/rheactor-errors'
 
 const IdMapType = dict(StringType, AggregateIdType)
 
@@ -74,7 +75,8 @@ export class JSONLD {
    * Parse $id link with multiple ids
    * @param {URIValue} $context
    * @param {URIValue} $id
-   * @return {Array}
+   * @return {Object}
+   * @throws ValidationFailedError if $id cannot be matched
    */
   parseIds ($context, $id) {
     URIValueType($context, ['JSONLD', 'parseIds()', '$context:URIValue'])
@@ -82,6 +84,7 @@ export class JSONLD {
     const template = this.typeMap[$context.toString()]
     const placeholders = template.match(/:[a-z_]+/g)
     const matches = $id.toString().match(new RegExp(template.replace(/:[a-z_]+/g, '([0-9]+)')))
+    if (matches === null) throw new ValidationFailedError(`$id "${$id}" does not match template "${template}"!`)
     const ids = {}
     placeholders.map((v, k) => { ids[v.substr(1)] = matches[k + 1] })
     return ids
