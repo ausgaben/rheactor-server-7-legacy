@@ -4,7 +4,7 @@ import tokenBearerStrategy from './token-bearer-strategy'
 import JSONLD from '../jsonld'
 import {verify} from '../../util/tokens'
 import {transform} from '../../api/transformer'
-import rheactorExpressBaseConfig from './base'
+import {rheactorExpressBaseConfig} from './base'
 import {URIValue} from 'rheactor-value-objects'
 import indexRoute from '../../api/route/index'
 import statusRoute from '../../api/route/status'
@@ -20,7 +20,7 @@ import avatarRoute from '../../api/route/avatar'
 /**
  * @param {express.app} app
  * @param {nconf} config
- * @param {ojbect} webConfig
+ * @param {object} webConfig
  * @param repositories
  * @param {BackendEmitter} emitter
  * @param {function} transformer
@@ -32,7 +32,7 @@ export function rheactorExpressConfig (app, config, webConfig, repositories, emi
     jsonld = JSONLD(apiHost)
   }
 
-  const base = rheactorExpressBaseConfig(config, webConfig, app)
+  const base = rheactorExpressBaseConfig(config.get('environment'), webConfig.mimeType, app)
 
   app.use(passport.initialize())
   let verifyToken = (token) => {

@@ -2,18 +2,22 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import {replace as replaceWithFastURLParser} from 'fast-url-parser'
 import {HttpProblemFromException, sendHttpProblem} from '../../api/send-http-problem'
+import {String as StringType} from 'tcomb'
 
 /**
- * @param {nconf} config
- * @param {ojbect} webConfig
+ * @param {String} environment
+ * @param {String} mimeType
  * @param {express.app} app
  * @returns {{sendHttpProblem: <function>}}
  */
-export default (config, webConfig, app) => {
+export const rheactorExpressBaseConfig = (environment, mimeType, app) => {
+  StringType(environment, ['rheactorServerExpressBaseConfiguration', 'environment:String'])
+  StringType(mimeType, ['rheactorServerExpressBaseConfiguration', 'mimeType:String'])
+
   replaceWithFastURLParser()
 
   app.enable('trust proxy')
-  app.use(bodyParser.json({type: webConfig.mimeType}))
+  app.use(bodyParser.json({type: mimeType}))
 
   app.use(cors({
     origin: config.get('web_host'),
@@ -39,7 +43,7 @@ export default (config, webConfig, app) => {
   })
 
   // Set content type
-  const CONTENT_TYPE = webConfig.mimeType + '; charset=utf-8'
+  const CONTENT_TYPE = mimeType + '; charset=utf-8'
   app.use((req, res, next) => {
     if (/\/api/.test(req.url)) {
       res.header('Content-Type', CONTENT_TYPE)
@@ -65,6 +69,6 @@ export default (config, webConfig, app) => {
   })
 
   return {
-    sendHttpProblem: sendHttpProblem.bind(null, config.get('environment'))
+    sendHttpProblem: sendHttpProblem.bind(null, environment)
   }
 }
