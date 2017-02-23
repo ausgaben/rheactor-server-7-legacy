@@ -19,7 +19,6 @@ export default function (apiHost) {
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/password-change'), User.$context, false, 'password-change'))
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/password-change/confirm'), User.$context, false, 'password-change-confirm'))
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/activate-account'), User.$context, false, 'activate-account'))
-  jsonld.addIndexLink(new Link(new URIValue(apiBase + '/avatar'), User.$context, false, 'avatar-upload'))
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/user'), User.$context, false, 'create-user'))
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/search/user'), User.$context, true, 'list-users'))
 
@@ -32,6 +31,7 @@ export default function (apiHost) {
   jsonld.addLink(User.$context, new Link(new URIValue(apiBase + '/user/:id/active'), User.$context, false, 'update-active'))
   jsonld.addLink(User.$context, new Link(new URIValue(apiBase + '/user/:id/firstname'), User.$context, false, 'update-firstname'))
   jsonld.addLink(User.$context, new Link(new URIValue(apiBase + '/user/:id/lastname'), User.$context, false, 'update-lastname'))
+  jsonld.addLink(User.$context, new Link(new URIValue(apiBase + '/user/:id/avatar'), User.$context, false, 'update-avatar'))
 
   return jsonld
 }

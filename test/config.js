@@ -32,7 +32,8 @@ nconf.defaults({
   'bcrypt_rounds': 14,
   'template_mailer': {
     'transport': 'server'
-  }
+  },
+  'trustedAvatarURL': '^https://example.com/.+'
 })
 
 export default nconf

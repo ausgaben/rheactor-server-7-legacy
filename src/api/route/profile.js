@@ -1,5 +1,6 @@
 import Promise from 'bluebird'
 import UpdateUserPropertyCommand from '../../command/user/update-property'
+import UpdateUserAvatarCommand from '../../command/user/update-avatar'
 import ActivateUserCommand from '../../command/user/activate'
 import DeactivateUserCommand from '../../command/user/deactivate'
 import {ValidationFailedError, ConflictError, AccessDeniedError} from '@resourcefulhumans/rheactor-errors'
@@ -7,7 +8,7 @@ import Joi from 'joi'
 import {checkVersion} from '../check-version'
 import _merge from 'lodash/merge'
 import verifySuperUser from '../verify-superuser'
-import {EmailValue} from 'rheactor-value-objects'
+import {EmailValue, URIValue} from 'rheactor-value-objects'
 import ChangeUserEmailCommand from '../../command/user/email-change'
 import SendUserEmailChangeConfirmationLinkCommand from '../../command/user/send-email-change-confirmation-link'
 import {isChangeEmailToken} from '../../util/tokens'
@@ -110,7 +111,7 @@ export default function (app, config, emitter, userRepository, tokenAuth, sendHt
     .try(() => {
       const schema = Joi.object().keys({
         id: Joi.string().min(1).trim(),
-        property: Joi.string().only(['firstname', 'lastname', 'active']).required().trim(),
+        property: Joi.string().only(['firstname', 'lastname', 'active', 'avatar']).required().trim(),
         value: Joi.any().required()
       })
       const query = _merge({}, req.body)
@@ -149,6 +150,13 @@ export default function (app, config, emitter, userRepository, tokenAuth, sendHt
                 if (!user.isActive) throw new ConflictError('User is not active!')
                 cmd = new DeactivateUserCommand(user, author)
               }
+              break
+            case 'avatar':
+              const trustedAvatarURL = new RegExp(config.get('trustedAvatarURL'))
+              if (!trustedAvatarURL.test(value)) {
+                throw new ValidationFailedError(`URL not allowed: ${value}`)
+              }
+              cmd = new UpdateUserAvatarCommand(user, new URIValue(value), author)
               break
             default:
               if (user[property] === value) throw new ConflictError(property + ' not changed ("' + value + '")!')

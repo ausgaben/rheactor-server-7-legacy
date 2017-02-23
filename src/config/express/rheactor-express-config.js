@@ -15,7 +15,6 @@ import passwordChangeRoute from '../../api/route/password-change'
 import profileRoute from '../../api/route/profile'
 import activateAccountRoute from '../../api/route/activate-account'
 import userRoute from '../../api/route/user'
-import avatarRoute from '../../api/route/avatar'
 
 /**
  * @param {express.app} app
@@ -50,7 +49,6 @@ export function rheactorExpressConfig (app, config, webConfig, repositories, emi
   profileRoute(app, config, emitter, repositories.user, tokenAuth, base.sendHttpProblem)
   activateAccountRoute(app, config, emitter, repositories.user, tokenAuth, base.sendHttpProblem)
   userRoute(app, config, emitter, repositories.user, tokenAuth, jsonld, base.sendHttpProblem, transformer.bind(null, jsonld))
-  avatarRoute(app, config, emitter, repositories.user, tokenAuth, jsonld, base.sendHttpProblem)
 
   return {
     jsonld,
