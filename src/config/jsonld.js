@@ -15,6 +15,7 @@ export default function (apiHost) {
 
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/status'), Status.$context, false, 'status'))
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/login'), JsonWebToken.$context, false, 'login'))
+  jsonld.addIndexLink(new Link(new URIValue(apiBase + '/token/create'), JsonWebToken.$context, false, 'create-token'))
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/registration'), User.$context, false, 'register'))
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/password-change'), User.$context, false, 'password-change'))
   jsonld.addIndexLink(new Link(new URIValue(apiBase + '/password-change/confirm'), User.$context, false, 'password-change-confirm'))

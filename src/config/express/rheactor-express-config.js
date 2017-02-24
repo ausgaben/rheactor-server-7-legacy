@@ -9,7 +9,7 @@ import {URIValue} from 'rheactor-value-objects'
 import indexRoute from '../../api/route/index'
 import statusRoute from '../../api/route/status'
 import registrationRoute from '../../api/route/registration'
-import tokenRoute from '../../api/route/token'
+import {tokenRoutes} from '../../api/route/token'
 import loginRoute from '../../api/route/login'
 import passwordChangeRoute from '../../api/route/password-change'
 import profileRoute from '../../api/route/profile'
@@ -43,7 +43,7 @@ export function rheactorExpressConfig (app, config, webConfig, repositories, emi
   indexRoute(app, jsonld)
   statusRoute(app, config)
   registrationRoute(app, config, emitter, repositories.user, base.sendHttpProblem)
-  tokenRoute(app, config, tokenAuth, jsonld, base.sendHttpProblem)
+  tokenRoutes(app, config, tokenAuth, jsonld, base.sendHttpProblem)
   loginRoute(app, config, repositories.user, jsonld, base.sendHttpProblem)
   passwordChangeRoute(app, config, emitter, repositories.user, tokenAuth, base.sendHttpProblem)
   profileRoute(app, config, emitter, repositories.user, tokenAuth, base.sendHttpProblem)
