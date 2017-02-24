@@ -47,8 +47,8 @@ export const tokenRoutes = (app, config, tokenAuth, jsonld, sendHttpProblem) => 
         throw new ValidationFailedError('Validation failed', req.body, v.error)
       }
       return jwt.sign(
-          {},
-          config.get('private_key'),
+        {},
+        config.get('private_key'),
         {
           algorithm: 'RS256',
           issuer: 'user', // User issued tokens will not be accepted by tokenAuth
@@ -56,9 +56,9 @@ export const tokenRoutes = (app, config, tokenAuth, jsonld, sendHttpProblem) => 
           subject: jsonld.createId(User.$context, req.user).toString(),
           expiresIn: config.get('token_lifetime')
         }
-        )
-    }
-    )
-    .then(token => res.status(201).send(new JsonWebToken(token, jsonld.createLinks(JsonWebToken.$context, token))))
+      )
+    })
+    .then(token => res.status(201).send(new JsonWebToken(token, jsonld.createLinks(JsonWebToken.$context, token).filter(l => l.rel !== 'token-renew'))))
+    .catch(err => sendHttpProblem(res, err))
   )
 }
