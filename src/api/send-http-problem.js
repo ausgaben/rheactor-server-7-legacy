@@ -64,4 +64,3 @@ export const sendHttpProblem = (environment, res, err) => {
       .send(HttpProblemFromException(err, status))
   })
 }
-

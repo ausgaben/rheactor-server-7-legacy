@@ -47,4 +47,3 @@ export default {
       return Promise.all(p)
     })
 }
-
