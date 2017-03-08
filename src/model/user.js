@@ -223,6 +223,7 @@ export class UserModel extends AggregateRoot {
           this.avatar = new URIValue(data.avatar)
         }
         this.persisted(event.aggregateId, event.createdAt)
+        this.preferences = {}
         break
       case UserPasswordChangedEvent:
         this.password = data.password

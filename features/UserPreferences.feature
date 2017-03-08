@@ -15,7 +15,7 @@ Feature: User preferences
     And the Content-Type header should equal "application/vnd.resourceful-humans.rheactor.v2+json; charset=utf-8"
     And "$context" should equal "https://github.com/ResourcefulHumans/rheactor-models#User"
     And "$id" should equal "{jwt.sub}"
-    And "preferences" should not exist
+    And "preferences" should equal "{}"
     And I store the link to "update-preferences" as "updatePreferences"
     And I store "$version" as "version"
 
