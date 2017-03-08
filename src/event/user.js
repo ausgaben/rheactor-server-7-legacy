@@ -9,6 +9,7 @@ export const UserPasswordChangedEvent = 'UserPasswordChangedEvent'
 export const UserEmailChangedEvent = 'UserEmailChangedEvent'
 export const UserAvatarUpdatedEvent = 'UserAvatarUpdatedEvent'
 export const UserPropertyChangedEvent = 'UserPropertyChangedEvent'
+export const UserPreferencesChangedEvent = 'UserPreferencesChangedEvent'
 export const SuperUserPermissionsGrantedEvent = 'SuperUserPermissionsGrantedEvent'
 export const SuperUserPermissionsRevokedEvent = 'SuperUserPermissionsRevokedEvent'
 

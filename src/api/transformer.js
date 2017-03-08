@@ -31,6 +31,7 @@ export const userTransformer = (user, jsonld) => {
     email: user.email,
     avatar: user.avatar ? user.avatar : undefined,
     superUser: user.superUser,
-    active: user.isActive
+    active: user.isActive,
+    preferences: user.preferences
   })
 }

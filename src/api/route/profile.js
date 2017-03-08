@@ -111,7 +111,7 @@ export default function (app, config, emitter, userRepository, tokenAuth, sendHt
     .try(() => {
       const schema = Joi.object().keys({
         id: Joi.string().min(1).trim(),
-        property: Joi.string().only(['firstname', 'lastname', 'active', 'avatar']).required().trim(),
+        property: Joi.string().only(['firstname', 'lastname', 'active', 'avatar', 'preferences']).required().trim(),
         value: Joi.any().required()
       })
       const query = _merge({}, req.body)

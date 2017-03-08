@@ -14,6 +14,8 @@ export default {
         return repository.persistEvent(cmd.user.setFirstname(cmd.value, cmd.author))
       case 'lastname':
         return repository.persistEvent(cmd.user.setLastname(cmd.value, cmd.author))
+      case 'preferences':
+        return repository.persistEvent(cmd.user.setPreferences(cmd.value, cmd.author))
       default:
         throw new ApplicationError('Changing of "' + cmd.property + '" on users not supported!')
     }

@@ -33,6 +33,7 @@ export default function (apiHost) {
   jsonld.addLink(User.$context, new Link(new URIValue(apiBase + '/user/:id/firstname'), User.$context, false, 'update-firstname'))
   jsonld.addLink(User.$context, new Link(new URIValue(apiBase + '/user/:id/lastname'), User.$context, false, 'update-lastname'))
   jsonld.addLink(User.$context, new Link(new URIValue(apiBase + '/user/:id/avatar'), User.$context, false, 'update-avatar'))
+  jsonld.addLink(User.$context, new Link(new URIValue(apiBase + '/user/:id/preferences'), User.$context, false, 'update-preferences'))
 
   return jsonld
 }

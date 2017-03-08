@@ -1,8 +1,9 @@
 import {ModelEvent, AggregateRoot} from 'rheactor-event-store'
 import {ValidationFailedError, ConflictError, UnhandledDomainEventError} from '@resourcefulhumans/rheactor-errors'
-import {String as StringType, Any as AnyType, Boolean as BooleanType, irreducible, maybe} from 'tcomb'
+import {String as StringType, Any as AnyType, Boolean as BooleanType, irreducible, maybe, dict} from 'tcomb'
 import {URIValue, URIValueType, MaybeURIValueType, EmailValue, EmailValueType} from 'rheactor-value-objects'
-import {SuperUserPermissionsGrantedEvent, UserPropertyChangedEvent, UserAvatarUpdatedEvent, UserActivatedEvent, UserDeactivatedEvent, UserEmailChangedEvent, UserCreatedEvent, UserPasswordChangedEvent, SuperUserPermissionsRevokedEvent} from '../event/user'
+import {SuperUserPermissionsGrantedEvent, UserPropertyChangedEvent, UserPreferencesChangedEvent, UserAvatarUpdatedEvent, UserActivatedEvent, UserDeactivatedEvent, UserEmailChangedEvent, UserCreatedEvent, UserPasswordChangedEvent, SuperUserPermissionsRevokedEvent} from '../event/user'
+const PreferencesType = dict(StringType, AnyType)
 
 const passwordRegex = /^\$2a\$\d+\$.+/
 
@@ -31,10 +32,11 @@ export class UserModel extends AggregateRoot {
    * @param {String} password
    * @param {Boolean} active
    * @param {URIValue} avatar
+   * @param {Object} preferences
    * @constructor
    * @throws ValidationFailedError if the creation fails due to invalid data
    */
-  constructor (email, firstname, lastname, password, active = false, avatar) {
+  constructor (email, firstname, lastname, password, active = false, avatar, preferences = {}) {
     super()
     EmailValueType(email)
     StringType(firstname)
@@ -42,6 +44,7 @@ export class UserModel extends AggregateRoot {
     StringType(password)
     BooleanType(active)
     MaybeURIValueType(avatar)
+    PreferencesType(preferences)
     this.email = email
     this.firstname = firstname
     this.lastname = lastname
@@ -50,6 +53,7 @@ export class UserModel extends AggregateRoot {
     this.activatedAt = (active) ? new Date() : undefined
     this.avatar = avatar
     this.superUser = false
+    this.preferences = preferences
   }
 
   /**
@@ -70,6 +74,20 @@ export class UserModel extends AggregateRoot {
    */
   setLastname (lastname, author) {
     return stringPropertyChange(this, 'lastname', lastname, author)
+  }
+
+  /**
+   * @param {object} preferences
+   * @param {UserModel} author
+   * @return {ModelEvent}
+   * @throws {ConflictError}
+   */
+  setPreferences (preferences, author) {
+    PreferencesType(preferences, ['UserModel', 'setPreferences()', 'preferences:Map(String: Any)'])
+    UserModelType(author)
+    this.preferences = preferences
+    this.updated()
+    return new ModelEvent(this.aggregateId(), UserPreferencesChangedEvent, preferences, this.updatedAt(), author.aggregateId())
   }
 
   /**
@@ -238,6 +256,10 @@ export class UserModel extends AggregateRoot {
         break
       case UserPropertyChangedEvent:
         this[data.property] = data.value
+        this.updated(event.createdAt)
+        break
+      case UserPreferencesChangedEvent:
+        this.preferences = data
         this.updated(event.createdAt)
         break
       default:
