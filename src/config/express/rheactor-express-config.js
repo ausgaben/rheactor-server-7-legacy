@@ -17,6 +17,30 @@ import activateAccountRoute from '../../api/route/activate-account'
 import userRoute from '../../api/route/user'
 
 /**
+ * This allows to have multiple handlers for different tokens
+ *
+ * Each parser can decide whether to handle the presented token,
+ * if not it should call the provided next() method to let the next
+ * parser have a go at the token.
+ *
+ * The last parser is always the default token parser from rheactor-server.
+ *
+ * @param {Array.<function(String, function, function)>} tokenParsers
+ * @returns {function(String, function)}
+ */
+const chainedTokenParsers = tokenParsers => {
+  return (tokenString, cb) => {
+    let idx = 0
+    const next = () => {
+      const parser = tokenParsers[idx++]
+      if (!parser) return cb(null, false) // no more token parsers left
+      return parser(tokenString, cb, next)
+    }
+    return next()
+  }
+}
+
+/**
  * @param {express.app} app
  * @param {nconf} config
  * @param {object} webConfig
@@ -24,8 +48,9 @@ import userRoute from '../../api/route/user'
  * @param {BackendEmitter} emitter
  * @param {function} transformer
  * @param {JSONLD} jsonld
+ * @param {Array.<Function>} tokenParsers
  */
-export function rheactorExpressConfig (app, config, webConfig, repositories, emitter, transformer = transform, jsonld = undefined) {
+export function rheactorExpressConfig (app, config, webConfig, repositories, emitter, transformer = transform, jsonld = undefined, tokenParsers = []) {
   const apiHost = new URIValue(config.get('api_host'))
   if (!jsonld) {
     jsonld = JSONLD(apiHost)
@@ -34,10 +59,12 @@ export function rheactorExpressConfig (app, config, webConfig, repositories, emi
   const base = rheactorExpressBaseConfig(config.get('environment'), webConfig.mimeType, app)
 
   app.use(passport.initialize())
+
   let verifyToken = (token) => {
-    return verify(apiHost, config.get('public_key'), token)
+    return verify(apiHost, config.get('public_key'), token) // this is wrapped in a function because public_key is not available immediately
   }
-  passport.use(new BearerStrategy(tokenBearerStrategy(verifyToken)))
+  passport.use(new BearerStrategy(chainedTokenParsers([...tokenParsers, tokenBearerStrategy(verifyToken)])))
+
   let tokenAuth = passport.authenticate('bearer', {session: false, failWithError: true})
 
   indexRoute(app, jsonld)
