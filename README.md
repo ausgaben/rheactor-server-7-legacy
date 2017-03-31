@@ -7,4 +7,17 @@
 [![semantic-release](https://img.shields.io/badge/semver-semantic%20release-e10079.svg)](https://github.com/semantic-release/semantic-release)[![Test Coverage](https://codeclimate.com/github/ResourcefulHumans/rheactor-server/badges/coverage.svg)](https://codeclimate.com/github/ResourcefulHumans/rheactor-server/coverage)
 [![Code Climate](https://codeclimate.com/github/ResourcefulHumans/rheactor-server/badges/gpa.svg)](https://codeclimate.com/github/ResourcefulHumans/rheactor-server)
 
-Core server components for [RHeactor applications](https://github.com/search?utf8=%E2%9C%93&q=topic%3Arheactor+org%3AResourcefulHumans&type=Repositories&ref=searchresults).
+Core server components for [RHeactor applications](https://github.com/RHeactor).
+
+The server provides typical business capabilities of a web application:
+
+ - User registration flow
+ - Login (Sessions are implemented stateless with [JSONWebTokens](https://jwt.io)  
+ - Managing of user details like email address, name, avatar, preferences
+ - SuperUser role
+ 
+ All features are available via a RESTful, [JSON-LD](http://json-ld.org/) inspired API and via the command line.
+ 
+ See the [BDD tests](https://github.com/ResourcefulHumans/rheactor-server/tree/master/features) for a complete description of the API features.
+ 
+ The available CLI commands are defined in [`src/console-command/`](https://github.com/ResourcefulHumans/rheactor-server/tree/master/src/console-command),
