@@ -9,4 +9,4 @@
 ## Json-LD
 
 - The relations do not contain the information about the appropriate 
-  method. Look into hydra.
+  method. Look into [Hydra](http://www.markus-lanthaler.com/hydra/).
