@@ -16,7 +16,7 @@ The server provides typical business capabilities of a web application:
  - Managing of user details like email address, name, avatar, preferences
  - SuperUser role
  
- All features are available via a RESTful, [JSON-LD](http://json-ld.org/) inspired API and via the command line.
+ All features are available via a RESTful, [JSON-LD](http://json-ld.org/) inspired API and via a command line interface. API errors will always be represented as a [`HttpProblem`](https://github.com/ResourcefulHumans/rheactor-models/blob/master/src/http-problem.js).
  
  See the [BDD tests](https://github.com/ResourcefulHumans/rheactor-server/tree/master/features) for a complete description of the API features.
  
