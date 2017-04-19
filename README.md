@@ -15,12 +15,43 @@ The server provides typical business capabilities of a web application:
  - Login (Sessions are implemented stateless with [JSONWebTokens](https://jwt.io)  
  - Managing of user details like email address, name, avatar, preferences
  - SuperUser role
- 
+
+## RESTful API
+
  All features are available via a RESTful, [JSON-LD](http://json-ld.org/) inspired API and via a command line interface. API errors will always be represented as a [`HttpProblem`](https://github.com/ResourcefulHumans/rheactor-models/blob/master/src/http-problem.js).
  
  See the [BDD tests](https://github.com/ResourcefulHumans/rheactor-server/tree/master/features) for a complete description of the API features.
  
  The available CLI commands are defined in [`src/console-command/`](https://github.com/ResourcefulHumans/rheactor-server/tree/master/src/console-command),
+ 
+ Besides using an EventSource connection for streaming events from the backend to the frontend, a *traditional* REST and JSON based implementation for reading and writing application data.
+
+The syntax is inspired by [JSON-ld](http://json-ld.org/) which supports the discovery of API endpoints through links and adds type information to the represented data.
+
+A client only needs to know the index for the respective API and every subsequent URL can be inferred from links in the response. The client just needs to look up the link it is interested to use. 
+
+Transferred data always contains a `$context` which basically gives every object a namespace. Code that is in charge of parsing responses can therefore easily validate that the data they are receiving is of the expected type.
+
+The [RHeactor DeepDive](./DeepDive) explains how this works in detail.
+
+### REST HTTP Verbs
+
+JSON-ld does not offer a solution for describing intents in links and thus *some* knowledge about how to work with endpoints is not dynamically inferred but used dogmatical.
+
+For instance, one could image the router `api/user/:id/vacation` which could be used with the verb `PUT` to set the users vacation reminder, and with the verb `DELETE` to disable it.
+
+In general routes follow these rules:
+
+ - `GET`: for reading entites, the server should send appropriate cache headers
+ - `POST`: for adding entries to collections, querying search endpoints
+ - `PUT`: for updating properties
+ - `DELETE`: for deleting entities, deleting entity properties
+
+### API Versioning
+
+Versioning is achieved through a custom content-type which contains a simple version number: `application/vnd.acme.product.v1+json`. This content type is used to [configure express](https://github.com/ResourcefulHumans/rheactor-server/blob/cbc0fe5aae0b8fc3fedfd8a4e3cfcfcaa442f531/src/config/express/base.js#L20) which essentially makes it not parse a request, if it has the wrong content-type header. 
+
+> :warning: Once the version number is increased, all client request will fail, if they are running outdated code. Use this sparsely.
 
 ## Handling of conflicts
 
