@@ -24,7 +24,7 @@ The server provides typical business capabilities of a web application:
 
 ## Handling of conflicts
 
-> :information_source: Client needs to resolve conflicts
+> :information_source: Clients need to resolve conflicts
 
 [Aggregate versions](https://github.com/ResourcefulHumans/rheactor-event-store#versioning) play an important part in the way state changes are implemented. The server will reject any update to an entity if the a wrong version number is [provided via the `If-Match` header](https://github.com/RHeactor/wiki/wiki/DeepDive#3-update-the-name). 
 
@@ -39,4 +39,4 @@ This aproach offers these advantags:
 
 That means for a client (and especially for UIs), that in 99% of user updates, everything will work fine, in the rare case of a conflict, it's far easier to ask the user to "reload the page" and have the user re-apply their changes, then merging changes from different updates.
 
-Nevertheless, for RHeactor applications, having real-time updates in the UI is a central feature, which is implemented in [`rheactor-web-app`](https://github.com/ResourcefulHumans/rheactor-web-app#real-time-propagation-of-user-interactions).
+Nevertheless, for RHeactor applications, having real-time updates in the UI is a central feature, for which utilities have been implemented in [`rheactor-web-app`](https://github.com/ResourcefulHumans/rheactor-web-app#readme).
