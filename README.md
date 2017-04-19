@@ -32,7 +32,7 @@ A client only needs to know the index for the respective API and every subsequen
 
 Transferred data always contains a `$context` which basically gives every object a namespace. Code that is in charge of parsing responses can therefore easily validate that the data they are receiving is of the expected type.
 
-Authentication is done stateless via [JSON Web Toekn](https://jwt.io/).
+Authorization is done stateless using [JSON Web Token](https://jwt.io/). It is used in HTTP request through the `Authorization: Bearer …` header but also through sending users links containing tokens, e.g. [to reset their passwords](https://github.com/ResourcefulHumans/rheactor-server/blob/937c60942727d2eba95c06787e735eb9281f6717/features/PasswordChange.feature#L27).
 
 The [RHeactor DeepDive](./DeepDive) explains how this works in detail.
 
