@@ -125,7 +125,7 @@ export class JSONLD {
    */
   encodeId (id) {
     URIValueType(id, ['JSONLD', 'encodeId()', 'id:URIValue'])
-    return new Buffer(encodeURI(encodeURIComponent(id.toString())), 'binary').toString('base64')
+    return Buffer.from(encodeURI(encodeURIComponent(id.toString())), 'binary').toString('base64')
   }
 
   /**

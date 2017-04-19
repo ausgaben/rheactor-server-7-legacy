@@ -7,6 +7,7 @@ export default (verifyToken) => {
     return Promise
       .resolve(verifyToken(token))
       .then((t) => {
+        // eslint-disable-next-line standard/no-callback-literal
         if (t.iss === 'user') return cb(false) // Do not allow user issued tokens
         return cb(null, t.payload.sub_id, t)
       })

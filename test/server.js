@@ -1,5 +1,7 @@
 import backend from './backend'
 import {rheactorExpressConfig} from '../src/config/express/rheactor-express-config'
+import express from 'express'
+
 const config = backend.config
 const webConfig = backend.webConfig
 const redis = backend.redis.client
@@ -7,7 +9,6 @@ const repositories = backend.repositories
 const emitter = backend.emitter
 
 // HTTP API
-import express from 'express'
 const app = express()
 app.set('env', 'test') // Suppress errors logged from express.js
 rheactorExpressConfig(app, config, webConfig, repositories, emitter)

@@ -22,7 +22,7 @@ export default {
   action: (backend, email, author, options) => Promise
     .join(
       backend.repositories.user.getByEmail(new EmailValue(email)),
-      backend.repositories.user.getByEmail(new EmailValue(author)),
+      backend.repositories.user.getByEmail(new EmailValue(author))
     )
     .spread((user, author) => {
       const p = []

@@ -1,8 +1,7 @@
 import request from 'supertest'
 import Promise from 'bluebird'
-Promise.promisifyAll(request)
-
 import backend from '../backend'
+Promise.promisifyAll(request)
 
 exports.clearDb = function () {
   return backend.redis.client.flushdb()
