@@ -55,6 +55,40 @@ Versioning is achieved through a custom content-type which contains a simple ver
 
 > :warning: Once the version number is increased, all client request will fail, if they are running outdated code. Use this sparsely.
 
+### No batch updating of properties
+
+The way the API endpoints are implemented serves the concept of *many small updates* where instead of the client being able to modify multiple properties at once, like this
+
+```
+PUT /api/model/10
+
+{
+  "property1": "newvalue1",
+  "property2", "newvalue2"
+}
+```
+
+it must update properties individually, like this
+
+```
+PUT /api/model/10/property1
+
+{
+  "value": "newvalue1"
+}
+```
+
+```
+PUT /api/model/10/property2
+
+{
+  "value": "newvalue2"
+}
+```
+This enables all clients, and especially UI clients, to offer on-thy-fly saving of changes once the user has completed entering a new value. This greatly reduces the risk of losing changes due to connection problems or because the user forgot to click *save*.
+
+UIs still may chose to offer a *save* feature, they can simply create all neccessary update request once the user clicks the *save* button.
+
 ## Handling of conflicts
 
 > :information_source: Clients need to resolve conflicts
