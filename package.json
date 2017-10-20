@@ -60,7 +60,7 @@
     "chai": "^3.5.0",
     "codeclimate-test-reporter": "^0.4.1",
     "husky": "^0.13.3",
-    "juice": "^4.0.2",
+    "juice": "^4.2.1",
     "lolex": "^1.6.0",
     "mocha": "^3.0.2",
     "nyc": "^10.2.0",
