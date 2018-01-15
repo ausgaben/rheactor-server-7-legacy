@@ -4,7 +4,7 @@ import SendUserPasswordChangeConfirmationLinkCommand from '../../command/user/se
 import ChangeUserPasswordCommand from '../../command/user/password-change'
 import {isLostPasswordToken} from '../../util/tokens'
 import bcrypt from 'bcrypt'
-import {ValidationFailedError, AccessDeniedError} from '@resourcefulhumans/rheactor-errors'
+import {ValidationFailedError} from '@resourcefulhumans/rheactor-errors'
 import Joi from 'joi'
 import {checkVersion} from '../check-version'
 Promise.promisifyAll(bcrypt)
@@ -60,12 +60,11 @@ export default function (app, config, emitter, userRepository, tokenAuth, sendHt
           if (err) {
             throw new ValidationFailedError('Invalid password', data, err)
           }
-          if (!isLostPasswordToken(req.authInfo)) {
-            throw new AccessDeniedError(req.url, 'Not a password change token')
-          }
           return userRepository.getById(req.user)
             .then((user) => {
-              checkVersion(req.authInfo.payload['$aggregateMeta'][user.constructor.name].version, user)
+              if (isLostPasswordToken(req.authInfo)) {
+                checkVersion(req.authInfo.payload['$aggregateMeta'][user.constructor.name].version, user)
+              }
               return bcrypt
                 .genSaltAsync(config.get('bcrypt_rounds'))
                 .then(bcrypt.hashAsync.bind(bcrypt, data.password))
