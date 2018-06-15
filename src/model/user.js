@@ -5,7 +5,7 @@ import {URIValue, URIValueType, MaybeURIValueType, EmailValue, EmailValueType} f
 import {SuperUserPermissionsGrantedEvent, UserPropertyChangedEvent, UserPreferencesChangedEvent, UserAvatarUpdatedEvent, UserActivatedEvent, UserDeactivatedEvent, UserEmailChangedEvent, UserCreatedEvent, UserPasswordChangedEvent, SuperUserPermissionsRevokedEvent} from '../event/user'
 const PreferencesType = dict(StringType, AnyType)
 
-const passwordRegex = /^\$2a\$\d+\$.+/
+const passwordRegex = /^\$2[ab]\$\d+\$.+/
 
 /**
  * @param {UserModel} self
