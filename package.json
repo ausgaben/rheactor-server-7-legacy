@@ -24,7 +24,7 @@
   "homepage": "https://github.com/ResourcefulHumans/rheactor-server#readme",
   "dependencies": {
     "aws-sdk": "^2.6.4",
-    "bcrypt": "^1.0.0",
+    "bcrypt": "^3.0.2",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "colors": "^1.1.2",
@@ -36,7 +36,6 @@
     "jsonwebtoken": "^7.1.9",
     "keypair": "^1.0.0",
     "lodash": "^4.16.1",
-    "lwip": "0.0.9",
     "multer": "^1.2.0",
     "nconf": "^0.8.4",
     "passport": "^0.3.2",

@@ -47,7 +47,6 @@ module.exports = (app, config, webConfig, repositories, emitter, transformer, js
   require('../../api/route/profile')(app, config, emitter, repositories.user, tokenAuth, base.sendHttpProblem)
   require('../../api/route/activate-account')(app, config, emitter, repositories.user, tokenAuth, base.sendHttpProblem)
   require('../../api/route/user')(app, config, emitter, repositories.user, tokenAuth, jsonld, base.sendHttpProblem, transformer.bind(null, jsonld))
-  require('../../api/route/avatar')(app, config, emitter, repositories.user, tokenAuth, jsonld, base.sendHttpProblem)
 
   return {
     jsonld,
